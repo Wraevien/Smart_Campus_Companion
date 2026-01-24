@@ -101,8 +101,9 @@ fun LoginRegister(controller: NavController){
                         defaultElevation = 6.dp
                     ),
                     modifier = Modifier
-                        .width(300.dp), onClick = {
-
+                        .width(300.dp),
+                    onClick = {
+                        controller.navigate("register")
                     }) {
                     Text("Sign Up");
                 }
