@@ -37,6 +37,8 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.example.smartcampuscompanion.R
+import com.example.smartcampuscompanion.composables.LoginErrorDialog
+import com.example.smartcampuscompanion.composables.ValidationErrorDialog
 
 @Composable
 fun LoginScreen(controller: NavController){
@@ -46,6 +48,18 @@ fun LoginScreen(controller: NavController){
     //fields
     var userName by remember{mutableStateOf("")};
     var password by remember{mutableStateOf("")};
+
+    //for pop ups
+    var showEmptyDialog by remember { mutableStateOf(false) }
+    var showErrorDialog by remember { mutableStateOf(false) }
+
+    if (showEmptyDialog) {
+        ValidationErrorDialog(onDismiss = { showEmptyDialog = false })
+    }
+
+    if (showErrorDialog) {
+        LoginErrorDialog(onDismiss = { showErrorDialog = false })
+    }
 
     ConstraintLayout(
         modifier = Modifier
@@ -148,9 +162,21 @@ fun LoginScreen(controller: NavController){
                                 .width(300.dp),
                                 onClick = {
 
-                                    /*TODO validate input with static user credentials,
-                                       then navigate to the dashboard screen.
-                                     */
+                                    if (userName.isNotEmpty() && password.isNotEmpty()) {
+
+                                        if (userName == "admin" && password == "admin") {
+                                            //navigate to dashboard (not yet added.)
+                                        }
+                                        else {
+                                            //wrong credentials
+                                            showErrorDialog = true
+                                        }
+
+                                    }
+                                    else {
+                                        //for empty field/s
+                                        showEmptyDialog = true
+                                    }
 
                                 }, colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFF015DB6),
