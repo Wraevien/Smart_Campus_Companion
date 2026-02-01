@@ -4,44 +4,52 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.smartcampuscompanion.data.SessionManager
-import com.example.smartcampuscompanion.navigation.Routes
-import com.example.smartcampuscompanion.screens.CampusInfoScreen
-import com.example.smartcampuscompanion.screens.DashboardScreen
 import com.example.smartcampuscompanion.screens.LoginRegister
 import com.example.smartcampuscompanion.screens.LoginScreen
 import com.example.smartcampuscompanion.screens.RegisterScreen
+import com.example.smartcampuscompanion.ui.theme.SmartCampusCompanionTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Screens()
+                Screens();
         }
     }
 }
 
+
 @Composable
-fun Screens() {
-    val controller = rememberNavController()
-    val context = LocalContext.current
-    val session = remember { SessionManager(context) }
+fun Screens(){
 
-    val startDestination = if (session.isLoggedIn()) Routes.DASHBOARD else Routes.LOGIN_REGISTER
+    val controller = rememberNavController();
 
-    NavHost(controller, startDestination) {
+    val navHost = NavHost(controller, "login/register"){
 
-        composable(Routes.LOGIN_REGISTER) { LoginRegister(controller) }
-        composable(Routes.LOGIN) { LoginScreen(controller) }
-        composable(Routes.REGISTER) { RegisterScreen(controller) }
-        composable(Routes.DASHBOARD) { DashboardScreen(controller) }
-        composable(Routes.CAMPUS_INFO) { CampusInfoScreen(controller) }
+        composable("login/register"){
+            LoginRegister(controller);
+        }
+
+        composable("login"){
+            LoginScreen(controller);
+        }
+
+        composable("register"){
+            RegisterScreen(controller);
+        }
+
     }
+
 }
+
