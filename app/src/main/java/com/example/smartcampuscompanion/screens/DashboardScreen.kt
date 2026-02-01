@@ -19,6 +19,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -31,7 +32,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.smartcampuscompanion.data.SessionManager
 import com.example.smartcampuscompanion.navigation.Routes
@@ -43,7 +43,7 @@ fun DashboardScreen(controller: NavController) {
     val context = LocalContext.current
     val session = remember { SessionManager(context) }
     val username = session.getUsername()
-    val gradient = listOf(Color(0xFFFFFFFF), Color(0xFFe8f4fd))
+    val gradient = listOf(MaterialTheme.colorScheme.surface, Color(0xFFE8F4FD))
 
     Column(
         modifier = Modifier
@@ -54,8 +54,8 @@ fun DashboardScreen(controller: NavController) {
             title = {
                 Text(
                     "Dashboard",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 22.sp // Slightly larger title
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
                 )
             },
             actions = {
@@ -68,33 +68,30 @@ fun DashboardScreen(controller: NavController) {
                     Icon(
                         imageVector = Icons.Default.ExitToApp,
                         contentDescription = "Logout",
-                        tint = Color.White
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color(0xFF015DB6),
-                titleContentColor = Color.White
+                containerColor = MaterialTheme.colorScheme.primary,
+                titleContentColor = MaterialTheme.colorScheme.onPrimary
             )
         )
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp), // Adjust padding for better spacing
+                .padding(16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            // Card wrapper for welcome section
             Card(
                 modifier = Modifier
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(24.dp), // Softer corners
+                shape = RoundedCornerShape(24.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White)
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
-
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -103,15 +100,15 @@ fun DashboardScreen(controller: NavController) {
                 ) {
                     Text(
                         text = "Welcome back,",
-                        fontSize = 24.sp,
-                        color = Color.DarkGray
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
 
                     Text(
                         text = username,
-                        fontSize = 32.sp,
+                        style = MaterialTheme.typography.displaySmall,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF015DB6),
+                        color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(vertical = 4.dp)
                     )
 
@@ -119,21 +116,21 @@ fun DashboardScreen(controller: NavController) {
 
                     Text(
                         text = "Smart Campus Companion",
-                        fontSize = 16.sp,
-                        color = Color.Gray
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
 
-                    Spacer(modifier = Modifier.height(32.dp)) // Reduced spacer height
+                    Spacer(modifier = Modifier.height(32.dp))
 
                     Button(
                         onClick = { controller.navigate(Routes.CAMPUS_INFO) },
                         modifier = Modifier
-                            .fillMaxWidth() // Make button fill width
+                            .fillMaxWidth()
                             .height(56.dp),
                         shape = RoundedCornerShape(16.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF015DB6),
-                            contentColor = Color.White
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
                         ),
                         elevation = ButtonDefaults.buttonElevation(
                             defaultElevation = 8.dp
@@ -144,7 +141,7 @@ fun DashboardScreen(controller: NavController) {
                             contentDescription = null,
                             modifier = Modifier.padding(end = 8.dp)
                         )
-                        Text("Campus Information", fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                        Text("Campus Information", style = MaterialTheme.typography.labelLarge)
                     }
                 }
             }
