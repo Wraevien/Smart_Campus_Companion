@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.smartcampuscompanion.data.SessionManager
 import com.example.smartcampuscompanion.navigation.Routes
@@ -43,7 +44,7 @@ fun DashboardScreen(controller: NavController) {
     val context = LocalContext.current
     val session = remember { SessionManager(context) }
     val username = session.getUsername()
-    val gradient = listOf(MaterialTheme.colorScheme.surface, Color(0xFFE8F4FD))
+    val gradient = listOf(Color.White, Color(0xFFe8f5e9))
 
     Column(
         modifier = Modifier
@@ -54,8 +55,8 @@ fun DashboardScreen(controller: NavController) {
             title = {
                 Text(
                     "Dashboard",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 22.sp
                 )
             },
             actions = {
@@ -68,13 +69,13 @@ fun DashboardScreen(controller: NavController) {
                     Icon(
                         imageVector = Icons.Default.ExitToApp,
                         contentDescription = "Logout",
-                        tint = MaterialTheme.colorScheme.onPrimary
+                        tint = Color.White
                     )
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                titleContentColor = MaterialTheme.colorScheme.onPrimary
+                containerColor = Color(0xFF599E29),
+                titleContentColor = Color.White
             )
         )
 
@@ -100,15 +101,15 @@ fun DashboardScreen(controller: NavController) {
                 ) {
                     Text(
                         text = "Welcome back,",
-                        style = MaterialTheme.typography.headlineSmall,
+                        fontSize = 24.sp,
                         color = MaterialTheme.colorScheme.onSurface
                     )
 
                     Text(
                         text = username,
-                        style = MaterialTheme.typography.displaySmall,
+                        fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = Color(0xFF599E29),
                         modifier = Modifier.padding(vertical = 4.dp)
                     )
 
@@ -116,7 +117,7 @@ fun DashboardScreen(controller: NavController) {
 
                     Text(
                         text = "Smart Campus Companion",
-                        style = MaterialTheme.typography.bodyLarge,
+                        fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
 
@@ -129,8 +130,8 @@ fun DashboardScreen(controller: NavController) {
                             .height(56.dp),
                         shape = RoundedCornerShape(16.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary
+                            containerColor = Color(0xFF599E29),
+                            contentColor = Color.White
                         ),
                         elevation = ButtonDefaults.buttonElevation(
                             defaultElevation = 8.dp
@@ -141,7 +142,7 @@ fun DashboardScreen(controller: NavController) {
                             contentDescription = null,
                             modifier = Modifier.padding(end = 8.dp)
                         )
-                        Text("Campus Information", style = MaterialTheme.typography.labelLarge)
+                        Text("Campus Information", fontSize = 16.sp, fontWeight = FontWeight.Medium)
                     }
                 }
             }

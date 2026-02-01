@@ -9,3 +9,6 @@ val Surface = Color(0xFFFFFFFF)
 val OnSurface = Color(0xFF121212)
 val TextPrimary = Color(0xFF333333)
 val TextSecondary = Color(0xFF666666)
+
+val GreenPrimary = Color(0xFF599E29)
+val LightGreen = Color(0xFFe8f5e9)
