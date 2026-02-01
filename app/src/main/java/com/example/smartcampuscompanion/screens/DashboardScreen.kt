@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
@@ -56,7 +55,7 @@ fun DashboardScreen(controller: NavController) {
                 Text(
                     "Dashboard",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
+                    fontSize = 22.sp // Slightly larger title
                 )
             },
             actions = {
@@ -82,7 +81,7 @@ fun DashboardScreen(controller: NavController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
+                .padding(16.dp), // Adjust padding for better spacing
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -90,10 +89,9 @@ fun DashboardScreen(controller: NavController) {
             // Card wrapper for welcome section
             Card(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                shape = RoundedCornerShape(20.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp), // Softer corners
+                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
 
@@ -125,12 +123,12 @@ fun DashboardScreen(controller: NavController) {
                         color = Color.Gray
                     )
 
-                    Spacer(modifier = Modifier.height(48.dp))
+                    Spacer(modifier = Modifier.height(32.dp)) // Reduced spacer height
 
                     Button(
                         onClick = { controller.navigate(Routes.CAMPUS_INFO) },
                         modifier = Modifier
-                            .width(280.dp)
+                            .fillMaxWidth() // Make button fill width
                             .height(56.dp),
                         shape = RoundedCornerShape(16.dp),
                         colors = ButtonDefaults.buttonColors(
@@ -146,10 +144,10 @@ fun DashboardScreen(controller: NavController) {
                             contentDescription = null,
                             modifier = Modifier.padding(end = 8.dp)
                         )
-                        Text("Campus Information", fontSize = 16.sp)
+                        Text("Campus Information", fontSize = 16.sp, fontWeight = FontWeight.Medium)
                     }
-                } 
-            } 
-        } 
+                }
+            }
+        }
     }
 }
