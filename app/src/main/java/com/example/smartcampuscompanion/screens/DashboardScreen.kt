@@ -9,11 +9,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -83,49 +86,70 @@ fun DashboardScreen(controller: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "Welcome back,",
-                fontSize = 24.sp,
-                color = Color.DarkGray
-            )
 
-            Text(
-                text = username,
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF015DB6)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "Smart Campus Companion",
-                fontSize = 16.sp,
-                color = Color.Gray
-            )
-
-            Spacer(modifier = Modifier.height(48.dp))
-
-            Button(
-                onClick = { controller.navigate(Routes.CAMPUS_INFO) },
+            // Card wrapper for welcome section
+            Card(
                 modifier = Modifier
-                    .width(280.dp)
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF015DB6),
-                    contentColor = Color.White
-                ),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 6.dp
-                )
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                shape = RoundedCornerShape(20.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
-                Icon(
-                    imageVector = Icons.Default.Info,
-                    contentDescription = null,
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                Text("Campus Information", fontSize = 16.sp)
-            }
-        }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Welcome back,",
+                        fontSize = 24.sp,
+                        color = Color.DarkGray
+                    )
+
+                    Text(
+                        text = username,
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF015DB6),
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "Smart Campus Companion",
+                        fontSize = 16.sp,
+                        color = Color.Gray
+                    )
+
+                    Spacer(modifier = Modifier.height(48.dp))
+
+                    Button(
+                        onClick = { controller.navigate(Routes.CAMPUS_INFO) },
+                        modifier = Modifier
+                            .width(280.dp)
+                            .height(56.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF015DB6),
+                            contentColor = Color.White
+                        ),
+                        elevation = ButtonDefaults.buttonElevation(
+                            defaultElevation = 8.dp
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Info,
+                            contentDescription = null,
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        Text("Campus Information", fontSize = 16.sp)
+                    }
+                } 
+            } 
+        } 
     }
 }
