@@ -37,15 +37,36 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.example.smartcampuscompanion.R
+import com.example.smartcampuscompanion.composables.LoginErrorDialog
+import com.example.smartcampuscompanion.composables.ValidationErrorDialog
+import androidx.compose.ui.platform.LocalContext
+import com.example.smartcampuscompanion.data.SessionManager
+import com.example.smartcampuscompanion.navigation.Routes
+
 
 @Composable
 fun LoginScreen(controller: NavController){
+
+    val context = LocalContext.current
+    val session = remember { SessionManager(context) }
 
     val gradient = listOf(Color(0xFFFFFFFF), Color(0xFF7cb3ea))
 
     //fields
     var userName by remember{mutableStateOf("")};
     var password by remember{mutableStateOf("")};
+
+    //for pop ups
+    var showEmptyDialog by remember { mutableStateOf(false) }
+    var showErrorDialog by remember { mutableStateOf(false) }
+
+    if (showEmptyDialog) {
+        ValidationErrorDialog(onDismiss = { showEmptyDialog = false })
+    }
+
+    if (showErrorDialog) {
+        LoginErrorDialog(onDismiss = { showErrorDialog = false })
+    }
 
     ConstraintLayout(
         modifier = Modifier
@@ -148,9 +169,26 @@ fun LoginScreen(controller: NavController){
                                 .width(300.dp),
                                 onClick = {
 
-                                    /*TODO validate input with static user credentials,
-                                       then navigate to the dashboard screen.
-                                     */
+                                    if (userName.isNotEmpty() && password.isNotEmpty()) {
+
+                                        if (userName == "admin" && password == "admin") {
+                                            session.login(userName)
+
+                                            controller.navigate(Routes.DASHBOARD) {
+                                                popUpTo(Routes.LOGIN) { inclusive = true }
+                                            }
+                                        }
+
+                                        else {
+                                            //wrong credentials
+                                            showErrorDialog = true
+                                        }
+
+                                    }
+                                    else {
+                                        //for empty field/s
+                                        showEmptyDialog = true
+                                    }
 
                                 }, colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFF015DB6),

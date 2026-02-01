@@ -58,7 +58,6 @@ fun LoginRegister(controller: NavController){
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-
             Image(
                 painter = painterResource(R.drawable.logo),
                 contentDescription = "Smart Campus Companion",
