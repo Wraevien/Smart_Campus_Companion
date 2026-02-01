@@ -21,11 +21,11 @@ Smart Campus Companion is a mobile application designed to assist university stu
 - Each member is required to have at least 5 meaningful commits
 
 ## Prelim Task Breakdown
-- Login UI: Member 1
-- Dashboard UI: Member 2
-- Campus Information UI: Member 3
-- Documentation: Member 4
-- Session Handling & Navigation Flow: Alesa (Team Leader)
+- Login UI: Brillantes
+- Dashboard UI: Caylas
+- Campus Information UI: Candelario
+- UI Components/Theme polish: Brutas
+- Session Handling & Navigation Flow: Brillante (Team Leader)
 
 ## Notes
 During the Prelim phase, placeholder screens were used for the Dashboard and Campus Information modules while the navigation flow and session logic were implemented. Full UI implementations will follow in the next development phase.
