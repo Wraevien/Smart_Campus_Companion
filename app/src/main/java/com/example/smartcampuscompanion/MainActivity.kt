@@ -18,6 +18,11 @@ import com.example.smartcampuscompanion.screens.LoginRegister
 import com.example.smartcampuscompanion.screens.LoginScreen
 import com.example.smartcampuscompanion.screens.RegisterScreen
 import com.example.smartcampuscompanion.ui.theme.SmartCampusCompanionTheme
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import com.example.smartcampuscompanion.data.SessionManager
+import com.example.smartcampuscompanion.navigation.Routes
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,25 +36,27 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun Screens(){
+fun Screens() {
+    val controller = rememberNavController()
+    val context = LocalContext.current
+    val session = remember { SessionManager(context) }
 
-    val controller = rememberNavController();
+    val startDestination = if (session.isLoggedIn()) Routes.DASHBOARD else Routes.LOGIN_REGISTER
 
-    val navHost = NavHost(controller, "login/register"){
+    NavHost(controller, startDestination) {
 
-        composable("login/register"){
-            LoginRegister(controller);
+        composable(Routes.LOGIN_REGISTER) { LoginRegister(controller) }
+        composable(Routes.LOGIN) { LoginScreen(controller) }
+        composable(Routes.REGISTER) { RegisterScreen(controller) }
+
+        // placeholder muna (member assigned sa dashboard will replace)
+        composable(Routes.DASHBOARD) {
+            Text("Dashboard placeholder")
         }
 
-        composable("login"){
-            LoginScreen(controller);
+        // placeholder muna (member assigned sa campus will replace)
+        composable(Routes.CAMPUS_INFO) {
+            Text("Campus Info placeholder")
         }
-
-        composable("register"){
-            RegisterScreen(controller);
-        }
-
     }
-
 }
-
