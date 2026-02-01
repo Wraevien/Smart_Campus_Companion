@@ -39,9 +39,16 @@ import androidx.navigation.NavController
 import com.example.smartcampuscompanion.R
 import com.example.smartcampuscompanion.composables.LoginErrorDialog
 import com.example.smartcampuscompanion.composables.ValidationErrorDialog
+import androidx.compose.ui.platform.LocalContext
+import com.example.smartcampuscompanion.data.SessionManager
+import com.example.smartcampuscompanion.navigation.Routes
+
 
 @Composable
 fun LoginScreen(controller: NavController){
+
+    val context = LocalContext.current
+    val session = remember { SessionManager(context) }
 
     val gradient = listOf(Color(0xFFFFFFFF), Color(0xFF7cb3ea))
 
@@ -165,8 +172,13 @@ fun LoginScreen(controller: NavController){
                                     if (userName.isNotEmpty() && password.isNotEmpty()) {
 
                                         if (userName == "admin" && password == "admin") {
-                                            //navigate to dashboard (not yet added.)
+                                            session.login(userName)
+
+                                            controller.navigate(Routes.DASHBOARD) {
+                                                popUpTo(Routes.LOGIN) { inclusive = true }
+                                            }
                                         }
+
                                         else {
                                             //wrong credentials
                                             showErrorDialog = true
