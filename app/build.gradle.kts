@@ -2,11 +2,13 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.kapt")
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
-    namespace = "com.example.smartcampuscompanion"
+
     compileSdk {
+        namespace = "com.example.smartcampuscompanion"
         version = release(36)
     }
 
