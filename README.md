@@ -36,3 +36,4 @@ Smart Campus Companion is a mobile application designed to assist university stu
 
 ## Notes
 During the Prelim phase, placeholder screens were used for the Dashboard and Campus Information modules while the navigation flow and session logic were implemented. Full UI implementations will follow in the next development phase.
+
