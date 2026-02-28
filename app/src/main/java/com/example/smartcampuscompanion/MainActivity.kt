@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.smartcampuscompanion.data.SessionManager
 import com.example.smartcampuscompanion.navigation.Routes
+import com.example.smartcampuscompanion.screens.AnnouncementsScreen
 import com.example.smartcampuscompanion.screens.CampusInfoScreen
 import com.example.smartcampuscompanion.screens.DashboardScreen
 import com.example.smartcampuscompanion.screens.LoginRegister
@@ -40,11 +41,11 @@ fun Screens() {
     val startDestination = if (session.isLoggedIn()) Routes.DASHBOARD else Routes.LOGIN_REGISTER
 
     NavHost(controller, startDestination) {
-
         composable(Routes.LOGIN_REGISTER) { LoginRegister(controller) }
         composable(Routes.LOGIN) { LoginScreen(controller) }
         composable(Routes.REGISTER) { RegisterScreen(controller) }
         composable(Routes.DASHBOARD) { DashboardScreen(controller) }
         composable(Routes.CAMPUS_INFO) { CampusInfoScreen(controller) }
+        composable(Routes.ANNOUNCEMENTS) { AnnouncementsScreen(controller) }
     }
 }
