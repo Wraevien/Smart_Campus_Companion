@@ -53,6 +53,38 @@ fun DashboardScreen(controller: NavController) {
 
     val announcementViewModel: AnnouncementViewModel = viewModel()
     val unreadCount by announcementViewModel.unreadCount.collectAsState()
-
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(brush = Brush.verticalGradient(colors = gradient))
+    ) {
+        TopAppBar(
+            title = {
+                Text(
+                    "Dashboard",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 22.sp
+                )
+            },
+            actions = {
+                IconButton(onClick = {
+                    session.logout()
+                    controller.navigate(Routes.LOGIN_REGISTER) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.ExitToApp,
+                        contentDescription = "Logout",
+                        tint = Color.White
+                    )
+                }
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = Color(0xFF599E29),
+                titleContentColor = Color.White
+            )
+        )
+    }
 
 }
