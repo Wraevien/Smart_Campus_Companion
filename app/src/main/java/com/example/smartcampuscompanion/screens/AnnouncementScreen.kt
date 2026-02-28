@@ -82,5 +82,27 @@ fun AnnouncementsScreen(controller: NavController) {
         } else {
             Spacer(modifier = Modifier.height(8.dp))
         }
+        if (announcements.isEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "No announcements yet.",
+                    color = Color.Gray,
+                    fontSize = 15.sp
+                )
+            }
+        } else {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(announcements, key = { it.id }) { announcement ->
+                    AnnouncementCard(
+                        announcement = announcement,
+                        onMarkAsRead = { viewModel.markAsRead(it) }
+                    )
+                }
+                item { Spacer(modifier = Modifier.height(16.dp)) }
+            }
+        }
     }
 }
