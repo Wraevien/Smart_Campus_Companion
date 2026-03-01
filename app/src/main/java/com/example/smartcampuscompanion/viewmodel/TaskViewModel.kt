@@ -8,9 +8,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class TaskViewModel(
-    private val repository: TaskRepository
-) : ViewModel() {
+class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
 
     val tasks = repository.tasks
         .stateIn(
@@ -19,7 +17,8 @@ class TaskViewModel(
             emptyList()
         )
 
-    fun addTask(
+    fun upsertTask(
+        id: Long = 0,
         title: String,
         description: String,
         dueAtMillis: Long
@@ -27,6 +26,7 @@ class TaskViewModel(
         viewModelScope.launch {
             repository.upsert(
                 TaskEntity(
+                    id = id,
                     title = title,
                     description = description,
                     dueAtMillis = dueAtMillis

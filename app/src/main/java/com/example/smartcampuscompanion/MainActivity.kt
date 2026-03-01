@@ -7,17 +7,23 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.smartcampuscompanion.data.SessionManager
+import com.example.smartcampuscompanion.data.db.DatabaseProvider
+import com.example.smartcampuscompanion.data.repository.TaskRepository
 import com.example.smartcampuscompanion.navigation.Routes
 import com.example.smartcampuscompanion.screens.CampusInfoScreen
 import com.example.smartcampuscompanion.screens.DashboardScreen
 import com.example.smartcampuscompanion.screens.LoginRegister
 import com.example.smartcampuscompanion.screens.LoginScreen
 import com.example.smartcampuscompanion.screens.RegisterScreen
+import com.example.smartcampuscompanion.screens.TaskManagerScreen
 import com.example.smartcampuscompanion.ui.theme.SmartCampusCompanionTheme
+import com.example.smartcampuscompanion.viewmodel.TaskViewModel
+import com.example.smartcampuscompanion.viewmodel.TaskViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +43,13 @@ fun Screens() {
     val context = LocalContext.current
     val session = remember { SessionManager(context) }
 
+    // Initialize Database, Repository, and ViewModel
+    val database = remember { DatabaseProvider.get(context) }
+    val repository = remember { TaskRepository(database.taskDao()) }
+    val taskViewModel: TaskViewModel = viewModel(
+        factory = TaskViewModelFactory(repository)
+    )
+
     val startDestination = if (session.isLoggedIn()) Routes.DASHBOARD else Routes.LOGIN_REGISTER
 
     NavHost(controller, startDestination) {
@@ -46,5 +59,8 @@ fun Screens() {
         composable(Routes.REGISTER) { RegisterScreen(controller) }
         composable(Routes.DASHBOARD) { DashboardScreen(controller) }
         composable(Routes.CAMPUS_INFO) { CampusInfoScreen(controller) }
+        composable(Routes.TASK_MANAGER) { 
+            TaskManagerScreen(navController = controller, viewModel = taskViewModel) 
+        }
     }
 }

@@ -40,7 +40,7 @@ fun DashboardScreen(controller: NavController) {
                 drawerContainerColor = Color.White,
                 modifier = Modifier.width(300.dp)
             ) {
-                // Drawer Header
+                // drawer header
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -69,36 +69,26 @@ fun DashboardScreen(controller: NavController) {
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Drawer Navigation Items
+                // list of
                 NavigationDrawerItem(
                     label = { Text("Profile") },
                     selected = false,
                     icon = { Icon(Icons.Default.Person, contentDescription = null) },
                     onClick = {
                         scope.launch { drawerState.close() }
-                        // todo add navigation later
                     },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )
 
                 NavigationDrawerItem(
-                    label = { Text("Task Manager") },
+                    label = { Text("Task & Schedule Manager") },
                     selected = false,
                     icon = { Icon(Icons.Default.List, contentDescription = null) },
                     onClick = {
-                        scope.launch { drawerState.close() }
-                        // todo add navigation later
-                    },
-                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-                )
-
-                NavigationDrawerItem(
-                    label = { Text("Schedule Manager") },
-                    selected = false,
-                    icon = { Icon(Icons.Default.DateRange, contentDescription = null) },
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                        // todo add navigation later
+                        scope.launch { 
+                            drawerState.close()
+                            controller.navigate(Routes.TASK_MANAGER)
+                        }
                     },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )
@@ -193,6 +183,30 @@ fun DashboardScreen(controller: NavController) {
                         )
 
                         Spacer(modifier = Modifier.height(32.dp))
+
+                        Button(
+                            onClick = { controller.navigate(Routes.TASK_MANAGER) },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF599E29),
+                                contentColor = Color.White
+                            ),
+                            elevation = ButtonDefaults.buttonElevation(
+                                defaultElevation = 8.dp
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.List,
+                                contentDescription = null,
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
+                            Text("Manage Tasks & Schedule", fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
 
                         Button(
                             onClick = { controller.navigate(Routes.CAMPUS_INFO) },

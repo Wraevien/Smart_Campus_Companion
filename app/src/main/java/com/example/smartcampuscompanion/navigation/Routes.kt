@@ -6,4 +6,5 @@ object Routes {
     const val REGISTER = "register"
     const val DASHBOARD = "dashboard"
     const val CAMPUS_INFO = "campus_info"
+    const val TASK_MANAGER = "task_manager"
 }
