@@ -5,10 +5,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.smartcampuscompanion.data.db.TaskEntity
 import com.example.smartcampuscompanion.viewmodel.TaskViewModel
@@ -37,7 +35,7 @@ fun TaskManagerScreen(navController: NavController, viewModel: TaskViewModel) {
                 title = { Text("Task & Schedule Manager") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -46,23 +44,60 @@ fun TaskManagerScreen(navController: NavController, viewModel: TaskViewModel) {
                     navigationIconContentColor = Color.White
                 )
             )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    taskToEdit = null
-                    showAddDialog = true
-                },
-                containerColor = Color(0xFF599E29),
-                contentColor = Color.White
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Task")
-            }
         }
     ) { padding ->
         if (tasks.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                Text("No tasks yet. Add one!", color = Color.Gray)
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(32.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.List,
+                        contentDescription = null,
+                        modifier = Modifier.size(100.dp),
+                        tint = Color.LightGray
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Text(
+                        text = "No tasks yet",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.DarkGray
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Get started by adding your first task!",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color.Gray,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                    Spacer(modifier = Modifier.height(48.dp))
+                    Button(
+                        onClick = {
+                            taskToEdit = null
+                            showAddDialog = true
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF599E29).copy(alpha = 0.1f)),
+                        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
+                        elevation = null
+                    ) {
+                        Icon(
+                            Icons.Default.Add, 
+                            contentDescription = null, 
+                            tint = Color(0xFF599E29),
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Create Task", color = Color(0xFF599E29), fontWeight = FontWeight.Bold)
+                    }
+                }
             }
         } else {
             LazyColumn(
@@ -79,6 +114,31 @@ fun TaskManagerScreen(navController: NavController, viewModel: TaskViewModel) {
                         },
                         onDelete = { viewModel.deleteTask(task.id) }
                     )
+                }
+                
+                // Persistent "Create Task" button at the bottom of the list
+                item {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(
+                        onClick = {
+                            taskToEdit = null
+                            showAddDialog = true
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF599E29).copy(alpha = 0.1f)),
+                        contentPadding = PaddingValues(vertical = 12.dp),
+                        elevation = null,
+                        shape = MaterialTheme.shapes.medium
+                    ) {
+                        Icon(
+                            Icons.Default.Add, 
+                            contentDescription = null, 
+                            tint = Color(0xFF599E29),
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Create Task", color = Color(0xFF599E29), fontWeight = FontWeight.Bold)
+                    }
                 }
             }
         }
@@ -191,7 +251,7 @@ fun TaskDialog(
         } 
     }
     
-    var selectedDateMillis by remember { mutableStateOf(calendar.timeInMillis) }
+    var selectedDateMillis by remember { mutableLongStateOf(calendar.timeInMillis) }
     
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
