@@ -1,6 +1,7 @@
 package com.example.smartcampuscompanion.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,11 +14,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.smartcampuscompanion.data.db.TaskEntity
+import com.example.smartcampuscompanion.ui.components.PrimaryButton
 import com.example.smartcampuscompanion.viewmodel.TaskViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -116,7 +120,6 @@ fun TaskManagerScreen(navController: NavController, viewModel: TaskViewModel) {
                     )
                 }
                 
-                // Persistent "Create Task" button at the bottom of the list
                 item {
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(
@@ -183,7 +186,6 @@ fun TaskItem(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Vertical Indicator Bar (Polished UI style)
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
@@ -264,39 +266,45 @@ fun TaskDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (task == null) "New Task" else "Edit Task") },
+        title = { Text(if (task == null) "New Task" else "Edit Task", fontWeight = FontWeight.Bold) },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
-                    label = { Text("Title") },
+                    label = { Text("Task Title") },
+                    leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null, tint = Color(0xFF599E29)) },
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
+                    singleLine = true,
+                    shape = MaterialTheme.shapes.medium
                 )
                 OutlinedTextField(
                     value = description,
                     onValueChange = { description = it },
                     label = { Text("Description (Optional)") },
-                    modifier = Modifier.fillMaxWidth()
+                    leadingIcon = { Icon(Icons.Default.Info, contentDescription = null, tint = Color(0xFF599E29)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = MaterialTheme.shapes.medium
                 )
                 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(
+                    OutlinedButton(
                         onClick = { showDatePicker = true },
                         modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF599E29))
+                        shape = MaterialTheme.shapes.medium,
+                        border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(brush = SolidColor(Color(0xFF599E29)))
                     ) {
                         val sdf = SimpleDateFormat("MMM dd", Locale.getDefault())
-                        Text(sdf.format(Date(selectedDateMillis)))
+                        Text(sdf.format(Date(selectedDateMillis)), color = Color(0xFF599E29), fontSize = 12.sp)
                     }
-                    Button(
+                    OutlinedButton(
                         onClick = { showTimePicker = true },
                         modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF599E29))
+                        shape = MaterialTheme.shapes.medium,
+                        border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(brush = SolidColor(Color(0xFF599E29)))
                     ) {
                         val sdf = SimpleDateFormat("hh:mm a", Locale.getDefault())
-                        Text(sdf.format(Date(selectedDateMillis)))
+                        Text(sdf.format(Date(selectedDateMillis)), color = Color(0xFF599E29), fontSize = 12.sp)
                     }
                 }
 
@@ -315,10 +323,19 @@ fun TaskDialog(
                                 
                                 selectedDateMillis = currentCal.timeInMillis
                                 showDatePicker = false
-                            }) { Text("OK") }
+                            }, colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFF599E29))) { Text("OK") }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = { showDatePicker = false }) { Text("Cancel") }
                         }
                     ) {
-                        DatePicker(state = datePickerState)
+                        DatePicker(
+                            state = datePickerState,
+                            colors = DatePickerDefaults.colors(
+                                selectedDayContainerColor = Color(0xFF599E29),
+                                todayContentColor = Color(0xFF599E29)
+                            )
+                        )
                     }
                 }
 
@@ -332,31 +349,60 @@ fun TaskDialog(
                                 currentCal.set(Calendar.MINUTE, timePickerState.minute)
                                 selectedDateMillis = currentCal.timeInMillis
                                 showTimePicker = false
-                            }) { Text("OK") }
+                            }, colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFF599E29))) { Text("OK") }
                         },
                         dismissButton = {
                             TextButton(onClick = { showTimePicker = false }) { Text("Cancel") }
                         },
                         text = {
-                            TimePicker(state = timePickerState)
+                            TimePicker(
+                                state = timePickerState,
+                                colors = TimePickerDefaults.colors(
+                                    selectorColor = Color(0xFF599E29),
+                                    periodSelectorSelectedContainerColor = Color(0xFF599E29).copy(alpha = 0.1f)
+                                )
+                            )
                         }
                     )
                 }
             }
         },
         confirmButton = {
-            Button(
-                onClick = { if (title.isNotBlank()) onConfirm(title, description, selectedDateMillis) },
-                enabled = title.isNotBlank(),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF599E29))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Text("Save")
+                // Aesthetic Cancel Button
+                OutlinedButton(
+                    onClick = onDismiss,
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(52.dp),
+                    shape = MaterialTheme.shapes.medium,
+                    border = androidx.compose.foundation.BorderStroke(1.5.dp, Color(0xFFE57373)), // Soft Red border
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFD32F2F)) // Standard Red text
+                ) {
+                    Text("Cancel", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                }
+                
+                // Aesthetic Save Button
+                Button(
+                    onClick = { if (title.isNotBlank()) onConfirm(title, description, selectedDateMillis) },
+                    enabled = title.isNotBlank(),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(52.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF599E29), // Theme Green
+                        contentColor = Color.White // Aesthetic contrast
+                    ),
+                    shape = MaterialTheme.shapes.medium,
+                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
+                ) {
+                    Text("Save Task", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                }
             }
         },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel", color = Color.Gray)
-            }
-        }
+        dismissButton = null
     )
 }
