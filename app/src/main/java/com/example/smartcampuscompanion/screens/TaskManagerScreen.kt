@@ -1,5 +1,6 @@
 package com.example.smartcampuscompanion.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -14,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -66,7 +68,7 @@ fun TaskManagerScreen(navController: NavController, viewModel: TaskViewModel) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize().padding(padding),
                 contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(tasks) { task ->
                     TaskItem(
@@ -109,27 +111,65 @@ fun TaskItem(
     val dateString = sdf.format(Date(task.dueAtMillis))
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        modifier = Modifier
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        shape = MaterialTheme.shapes.medium
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier
+                .height(IntrinsicSize.Min)
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(text = task.title, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                if (task.description.isNotEmpty()) {
-                    Text(text = task.description, fontSize = 14.sp, color = Color.Gray)
+            // Vertical Indicator Bar (Polished UI style)
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(6.dp)
+                    .background(Color(0xFF599E29))
+            )
+            
+            Row(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = task.title, 
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold, 
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    if (task.description.isNotEmpty()) {
+                        Text(
+                            text = task.description, 
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Due: $dateString", 
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Color(0xFF599E29), 
+                        fontWeight = FontWeight.SemiBold
+                    )
                 }
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "Due: $dateString", fontSize = 12.sp, color = Color(0xFF599E29), fontWeight = FontWeight.Medium)
-            }
-            IconButton(onClick = onEdit) {
-                Icon(Icons.Default.Edit, contentDescription = "Edit", tint = Color(0xFF1976D2))
-            }
-            IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color(0xFFD32F2F))
+                
+                Row {
+                    IconButton(onClick = onEdit) {
+                        Icon(Icons.Default.Edit, contentDescription = "Edit", tint = Color(0xFF1976D2))
+                    }
+                    IconButton(onClick = onDelete) {
+                        Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color(0xFFD32F2F))
+                    }
+                }
             }
         }
     }
