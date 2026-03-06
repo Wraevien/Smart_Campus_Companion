@@ -1,13 +1,13 @@
 package com.example.smartcampuscompanion.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.automirrored.filled.ExitToApp
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,15 +19,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.smartcampuscompanion.data.Announcement
 import com.example.smartcampuscompanion.data.SessionManager
 import com.example.smartcampuscompanion.navigation.Routes
-import com.example.smartcampuscompanion.ui.theme.GreenPrimary
 import com.example.smartcampuscompanion.ui.theme.BluePrimary
+import com.example.smartcampuscompanion.ui.theme.GreenPrimary
 import com.example.smartcampuscompanion.viewmodel.AnnouncementViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,24 +36,44 @@ fun DashboardScreen(controller: NavController) {
     val context = LocalContext.current
     val session = remember { SessionManager(context) }
     val username = session.getUsername()
-    // Soft Green gradient background
-    val gradient = listOf(Color(0xFFF1F8E9), Color(0xFFC5E1A5))
+    
+    val gradient = listOf(Color(0xFFF1F8E9), Color(0xFFE8F5E9), Color(0xFFE3F2FD))
 
     val announcementViewModel: AnnouncementViewModel = viewModel()
-    val unreadCount by announcementViewModel.unreadCount.collectAsState()
+    val announcements by announcementViewModel.announcements.collectAsState()
+    val recentAnnouncement = announcements.firstOrNull()
 
     Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        "DASHBOARD",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        letterSpacing = 2.sp
-                    )
-                },
-                actions = {
+        modifier = Modifier.background(brush = Brush.verticalGradient(colors = gradient)),
+        containerColor = Color.Transparent
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+        ) {
+            // Custom Header
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 20.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column {
+                        Text(
+                            text = "Welcome back,",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.Gray
+                        )
+                        Text(
+                            text = username.replaceFirstChar { it.uppercase() },
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = if (username.lowercase() == "admin") BluePrimary else GreenPrimary
+                        )
+                    }
                     IconButton(
                         onClick = {
                             session.logout()
@@ -63,112 +82,80 @@ fun DashboardScreen(controller: NavController) {
                             }
                         },
                         modifier = Modifier
-                            .padding(end = 8.dp)
                             .clip(CircleShape)
-                            .background(Color.White.copy(alpha = 0.2f))
+                            .background(Color.White.copy(alpha = 0.5f))
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                            imageVector = Icons.Outlined.Logout,
                             contentDescription = "Logout",
-                            tint = Color.White
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = BluePrimary, // Changed to Blue (Requested)
-                    titleContentColor = Color.White
-                )
-            )
-        }
-    ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(brush = Brush.verticalGradient(colors = gradient))
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(24.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // Main Profile Card
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .shadow(15.dp, RoundedCornerShape(32.dp)),
-                    shape = RoundedCornerShape(32.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White)
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 40.dp, horizontal = 24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Surface(
-                            shape = CircleShape,
-                            color = BluePrimary.copy(alpha = 0.1f), // Switched to Blue for avatar
-                            modifier = Modifier.size(90.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Person,
-                                contentDescription = null,
-                                tint = BluePrimary,
-                                modifier = Modifier.padding(18.dp)
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(20.dp))
-
-                        Text(
-                            text = "Welcome back,",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = Color.Gray,
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Normal
-                        )
-
-                        Text(
-                            text = username.replaceFirstChar { it.uppercase() },
-                            style = MaterialTheme.typography.headlineLarge,
-                            fontWeight = FontWeight.Medium,
-                            color = BluePrimary,
-                            modifier = Modifier.padding(vertical = 4.dp),
-                            letterSpacing = (-0.5).sp
-                        )
-
-                        Text(
-                            text = "Smart Campus Companion",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = Color.LightGray.copy(alpha = 0.8f),
-                            letterSpacing = 1.2.sp,
-                            fontWeight = FontWeight.Normal
+                            tint = BluePrimary
                         )
                     }
                 }
+            }
 
-                // Action Buttons Section - Changed to Blue (Requested)
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+            // Quick Actions Section
+            item {
+                Text(
+                    text = "Quick Actions",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    AestheticButton(
-                        text = "Campus Information",
-                        icon = Icons.Default.Info,
-                        backgroundColor = BluePrimary,
+                    QuickActionCard(
+                        title = "Campus Info",
+                        icon = Icons.Outlined.Apartment,
+                        color = GreenPrimary,
+                        modifier = Modifier.weight(1f),
                         onClick = { controller.navigate(Routes.CAMPUS_INFO) }
                     )
-
-                    AestheticButton(
-                        text = "Announcements",
-                        icon = Icons.Default.Notifications,
-                        backgroundColor = BluePrimary,
-                        badgeCount = unreadCount,
+                    QuickActionCard(
+                        title = "Announcements",
+                        icon = Icons.Outlined.Campaign,
+                        color = BluePrimary,
+                        modifier = Modifier.weight(1f),
                         onClick = { controller.navigate(Routes.ANNOUNCEMENTS) }
                     )
+                }
+            }
+            
+            // Recent Announcement Section
+            item {
+                Text(
+                    text = "Recent Announcement",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                )
+                if (recentAnnouncement != null) {
+                    ModernAnnouncementCard(announcement = recentAnnouncement) {
+                        controller.navigate(Routes.ANNOUNCEMENTS)
+                    }
+                } else {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp, vertical = 16.dp),
+                        shape = RoundedCornerShape(28.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.8f))
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(24.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(Icons.Outlined.Done, contentDescription = null, tint = GreenPrimary)
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Text("All caught up! No new announcements.", style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
                 }
             }
         }
@@ -176,73 +163,89 @@ fun DashboardScreen(controller: NavController) {
 }
 
 @Composable
-fun AestheticButton(
-    text: String,
-    icon: ImageVector,
-    backgroundColor: Color,
-    badgeCount: Int = 0,
+fun QuickActionCard(
+    title: String, 
+    icon: ImageVector, 
+    color: Color, 
+    modifier: Modifier = Modifier, 
     onClick: () -> Unit
 ) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(80.dp)
-            .shadow(10.dp, RoundedCornerShape(24.dp)),
-        shape = RoundedCornerShape(24.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = backgroundColor,
-            contentColor = Color.White
-        ),
-        contentPadding = PaddingValues(horizontal = 24.dp)
+    Card(
+        modifier = modifier
+            .height(140.dp)
+            .shadow(8.dp, RoundedCornerShape(28.dp))
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(28.dp),
+        colors = CardDefaults.cardColors(containerColor = color)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             Surface(
-                color = Color.White.copy(alpha = 0.2f),
-                shape = RoundedCornerShape(16.dp),
-                modifier = Modifier.size(48.dp)
+                shape = CircleShape,
+                color = Color.White.copy(alpha = 0.9f),
+                modifier = Modifier.size(44.dp)
             ) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
+                    tint = color,
                     modifier = Modifier.padding(10.dp)
                 )
             }
-            
-            Spacer(modifier = Modifier.width(20.dp))
-            
             Text(
-                text = text,
+                text = title,
+                color = Color.White,
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.weight(1f),
-                letterSpacing = 0.5.sp
+                fontWeight = FontWeight.Bold,
+                maxLines = 1
             )
-            
-            if (badgeCount > 0) {
-                Surface(
-                    color = Color.White,
-                    shape = CircleShape,
-                    modifier = Modifier.size(28.dp)
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Text(
-                            text = badgeCount.toString(),
-                            color = backgroundColor,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-            } else {
+        }
+    }
+}
+
+@Composable
+fun ModernAnnouncementCard(announcement: Announcement, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp, vertical = 16.dp)
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(28.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.8f))
+    ) {
+        Column(modifier = Modifier.padding(24.dp)) {
+            Text(
+                text = announcement.title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = announcement.content,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray,
+                maxLines = 2,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = announcement.date,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color.Gray
+                )
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                    contentDescription = null,
-                    modifier = Modifier.size(24.dp),
-                    tint = Color.White.copy(alpha = 0.7f)
+                    imageVector = Icons.Outlined.ArrowForward,
+                    contentDescription = "View",
+                    tint = BluePrimary
                 )
             }
         }
