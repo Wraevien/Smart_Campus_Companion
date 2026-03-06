@@ -1,45 +1,33 @@
 package com.example.smartcampuscompanion.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.smartcampuscompanion.data.SessionManager
 import com.example.smartcampuscompanion.navigation.Routes
+import com.example.smartcampuscompanion.ui.theme.GreenPrimary
+import com.example.smartcampuscompanion.ui.theme.BluePrimary
 import com.example.smartcampuscompanion.viewmodel.AnnouncementViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,128 +37,213 @@ fun DashboardScreen(controller: NavController) {
     val context = LocalContext.current
     val session = remember { SessionManager(context) }
     val username = session.getUsername()
-    val gradient = listOf(Color.White, Color(0xFFe8f5e9))
+    // Soft Green gradient background
+    val gradient = listOf(Color(0xFFF1F8E9), Color(0xFFC5E1A5))
 
     val announcementViewModel: AnnouncementViewModel = viewModel()
     val unreadCount by announcementViewModel.unreadCount.collectAsState()
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(brush = Brush.verticalGradient(colors = gradient))
-    ) {
-        TopAppBar(
-            title = {
-                Text(
-                    "Dashboard",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 22.sp
-                )
-            },
-            actions = {
-                IconButton(onClick = {
-                    session.logout()
-                    controller.navigate(Routes.LOGIN_REGISTER) {
-                        popUpTo(0) { inclusive = true }
-                    }
-                }) {
-                    Icon(
-                        imageVector = Icons.Default.ExitToApp,
-                        contentDescription = "Logout",
-                        tint = Color.White
+
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        "DASHBOARD",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        letterSpacing = 2.sp
                     )
-                }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color(0xFF599E29),
-                titleContentColor = Color.White
+                },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            session.logout()
+                            controller.navigate(Routes.LOGIN_REGISTER) {
+                                popUpTo(0) { inclusive = true }
+                            }
+                        },
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .clip(CircleShape)
+                            .background(Color.White.copy(alpha = 0.2f))
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                            contentDescription = "Logout",
+                            tint = Color.White
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = BluePrimary, // Changed to Blue (Requested)
+                    titleContentColor = Color.White
+                )
             )
-        )
-        Column(
+        }
+    ) { innerPadding ->
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(innerPadding)
+                .background(brush = Brush.verticalGradient(colors = gradient))
         ) {
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(24.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(24.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(
+                // Main Profile Card
+                Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .shadow(15.dp, RoundedCornerShape(32.dp)),
+                    shape = RoundedCornerShape(32.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White)
                 ) {
-                    Text(
-                        text = "Welcome back,",
-                        fontSize = 24.sp,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-
-                    Text(
-                        text = username,
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF599E29),
-                        modifier = Modifier.padding(vertical = 4.dp)
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        text = "Smart Campus Companion",
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-
-                    Spacer(modifier = Modifier.height(32.dp))
-
-                    Button(
-                        onClick = { controller.navigate(Routes.CAMPUS_INFO) },
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(56.dp),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF599E29),
-                            contentColor = Color.White
-                        ),
-                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
+                            .padding(vertical = 40.dp, horizontal = 24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Info,
-                            contentDescription = null,
-                            modifier = Modifier.padding(end = 8.dp)
-                        )
-                        Text("Campus Information", fontSize = 16.sp, fontWeight = FontWeight.Medium)
-                    }
+                        Surface(
+                            shape = CircleShape,
+                            color = BluePrimary.copy(alpha = 0.1f), // Switched to Blue for avatar
+                            modifier = Modifier.size(90.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = null,
+                                tint = BluePrimary,
+                                modifier = Modifier.padding(18.dp)
+                            )
+                        }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(20.dp))
 
-                    Button(
-                        onClick = { controller.navigate(Routes.ANNOUNCEMENTS) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF015DB6),
-                            contentColor = Color.White
-                        ),
-                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Notifications,
-                            contentDescription = null,
-                            modifier = Modifier.padding(end = 8.dp)
+                        Text(
+                            text = "Welcome back,",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = Color.Gray,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Normal
                         )
-                        val label = if (unreadCount > 0) "Announcements ($unreadCount)" else "Announcements"
-                        Text(label, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+
+                        Text(
+                            text = username.replaceFirstChar { it.uppercase() },
+                            style = MaterialTheme.typography.headlineLarge,
+                            fontWeight = FontWeight.Medium,
+                            color = BluePrimary,
+                            modifier = Modifier.padding(vertical = 4.dp),
+                            letterSpacing = (-0.5).sp
+                        )
+
+                        Text(
+                            text = "Smart Campus Companion",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = Color.LightGray.copy(alpha = 0.8f),
+                            letterSpacing = 1.2.sp,
+                            fontWeight = FontWeight.Normal
+                        )
                     }
                 }
+
+                // Action Buttons Section - Changed to Blue (Requested)
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    AestheticButton(
+                        text = "Campus Information",
+                        icon = Icons.Default.Info,
+                        backgroundColor = BluePrimary,
+                        onClick = { controller.navigate(Routes.CAMPUS_INFO) }
+                    )
+
+                    AestheticButton(
+                        text = "Announcements",
+                        icon = Icons.Default.Notifications,
+                        backgroundColor = BluePrimary,
+                        badgeCount = unreadCount,
+                        onClick = { controller.navigate(Routes.ANNOUNCEMENTS) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun AestheticButton(
+    text: String,
+    icon: ImageVector,
+    backgroundColor: Color,
+    badgeCount: Int = 0,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp)
+            .shadow(10.dp, RoundedCornerShape(24.dp)),
+        shape = RoundedCornerShape(24.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = backgroundColor,
+            contentColor = Color.White
+        ),
+        contentPadding = PaddingValues(horizontal = 24.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Surface(
+                color = Color.White.copy(alpha = 0.2f),
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier.size(48.dp)
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    modifier = Modifier.padding(10.dp)
+                )
+            }
+            
+            Spacer(modifier = Modifier.width(20.dp))
+            
+            Text(
+                text = text,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.weight(1f),
+                letterSpacing = 0.5.sp
+            )
+            
+            if (badgeCount > 0) {
+                Surface(
+                    color = Color.White,
+                    shape = CircleShape,
+                    modifier = Modifier.size(28.dp)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(
+                            text = badgeCount.toString(),
+                            color = backgroundColor,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            } else {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp),
+                    tint = Color.White.copy(alpha = 0.7f)
+                )
             }
         }
     }
