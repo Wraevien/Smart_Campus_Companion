@@ -48,6 +48,18 @@ fun TaskManagerScreen(navController: NavController, viewModel: TaskViewModel) {
                     navigationIconContentColor = Color.White
                 )
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    taskToEdit = null
+                    showAddDialog = true
+                },
+                containerColor = Color(0xFF015DB6),
+                contentColor = Color.White
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Add Task")
+            }
         }
     ) { padding ->
         if (tasks.isEmpty()) {
@@ -82,25 +94,6 @@ fun TaskManagerScreen(navController: NavController, viewModel: TaskViewModel) {
                         color = Color.Gray,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
-                    Spacer(modifier = Modifier.height(48.dp))
-                    Button(
-                        onClick = {
-                            taskToEdit = null
-                            showAddDialog = true
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF599E29).copy(alpha = 0.1f)),
-                        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
-                        elevation = null
-                    ) {
-                        Icon(
-                            Icons.Default.Add, 
-                            contentDescription = null, 
-                            tint = Color(0xFF599E29),
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Create Task", color = Color(0xFF599E29), fontWeight = FontWeight.Bold)
-                    }
                 }
             }
         } else {
@@ -119,30 +112,7 @@ fun TaskManagerScreen(navController: NavController, viewModel: TaskViewModel) {
                         onDelete = { viewModel.deleteTask(task.id) }
                     )
                 }
-                
-                item {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(
-                        onClick = {
-                            taskToEdit = null
-                            showAddDialog = true
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF599E29).copy(alpha = 0.1f)),
-                        contentPadding = PaddingValues(vertical = 12.dp),
-                        elevation = null,
-                        shape = MaterialTheme.shapes.medium
-                    ) {
-                        Icon(
-                            Icons.Default.Add, 
-                            contentDescription = null, 
-                            tint = Color(0xFF599E29),
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Create Task", color = Color(0xFF599E29), fontWeight = FontWeight.Bold)
-                    }
-                }
+                item { Spacer(modifier = Modifier.height(80.dp)) }
             }
         }
 
@@ -190,7 +160,7 @@ fun TaskItem(
                 modifier = Modifier
                     .fillMaxHeight()
                     .width(6.dp)
-                    .background(Color(0xFF599E29))
+                    .background(Color(0xFF015DB6))
             )
             
             Row(
@@ -219,7 +189,7 @@ fun TaskItem(
                     Text(
                         text = "Due: $dateString", 
                         style = MaterialTheme.typography.labelMedium,
-                        color = Color(0xFF599E29), 
+                        color = Color(0xFF599E29),
                         fontWeight = FontWeight.SemiBold
                     )
                 }
@@ -273,7 +243,7 @@ fun TaskDialog(
                     value = title,
                     onValueChange = { title = it },
                     label = { Text("Task Title") },
-                    leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null, tint = Color(0xFF599E29)) },
+                    leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null, tint = Color(0xFF015DB6)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = MaterialTheme.shapes.medium
@@ -282,7 +252,7 @@ fun TaskDialog(
                     value = description,
                     onValueChange = { description = it },
                     label = { Text("Description (Optional)") },
-                    leadingIcon = { Icon(Icons.Default.Info, contentDescription = null, tint = Color(0xFF599E29)) },
+                    leadingIcon = { Icon(Icons.Default.Info, contentDescription = null, tint = Color(0xFF015DB6)) },
                     modifier = Modifier.fillMaxWidth(),
                     shape = MaterialTheme.shapes.medium
                 )
@@ -292,19 +262,19 @@ fun TaskDialog(
                         onClick = { showDatePicker = true },
                         modifier = Modifier.weight(1f),
                         shape = MaterialTheme.shapes.medium,
-                        border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(brush = SolidColor(Color(0xFF599E29)))
+                        border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(brush = SolidColor(Color(0xFF015DB6)))
                     ) {
                         val sdf = SimpleDateFormat("MMM dd", Locale.getDefault())
-                        Text(sdf.format(Date(selectedDateMillis)), color = Color(0xFF599E29), fontSize = 12.sp)
+                        Text(sdf.format(Date(selectedDateMillis)), color = Color(0xFF015DB6), fontSize = 12.sp)
                     }
                     OutlinedButton(
                         onClick = { showTimePicker = true },
                         modifier = Modifier.weight(1f),
                         shape = MaterialTheme.shapes.medium,
-                        border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(brush = SolidColor(Color(0xFF599E29)))
+                        border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(brush = SolidColor(Color(0xFF015DB6)))
                     ) {
                         val sdf = SimpleDateFormat("hh:mm a", Locale.getDefault())
-                        Text(sdf.format(Date(selectedDateMillis)), color = Color(0xFF599E29), fontSize = 12.sp)
+                        Text(sdf.format(Date(selectedDateMillis)), color = Color(0xFF015DB6), fontSize = 12.sp)
                     }
                 }
 
@@ -323,17 +293,20 @@ fun TaskDialog(
                                 
                                 selectedDateMillis = currentCal.timeInMillis
                                 showDatePicker = false
-                            }, colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFF599E29))) { Text("OK") }
+                            }, colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFF015DB6))) { Text("OK") }
                         },
                         dismissButton = {
-                            TextButton(onClick = { showDatePicker = false }) { Text("Cancel") }
+                            TextButton(
+                                onClick = { showDatePicker = false },
+                                colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFFD32F2F))
+                            ) { Text("Cancel") }
                         }
                     ) {
                         DatePicker(
                             state = datePickerState,
                             colors = DatePickerDefaults.colors(
-                                selectedDayContainerColor = Color(0xFF599E29),
-                                todayContentColor = Color(0xFF599E29)
+                                selectedDayContainerColor = Color(0xFF015DB6),
+                                todayContentColor = Color(0xFF015DB6)
                             )
                         )
                     }
@@ -349,17 +322,20 @@ fun TaskDialog(
                                 currentCal.set(Calendar.MINUTE, timePickerState.minute)
                                 selectedDateMillis = currentCal.timeInMillis
                                 showTimePicker = false
-                            }, colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFF599E29))) { Text("OK") }
+                            }, colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFF015DB6))) { Text("OK") }
                         },
                         dismissButton = {
-                            TextButton(onClick = { showTimePicker = false }) { Text("Cancel") }
+                            TextButton(
+                                onClick = { showTimePicker = false },
+                                colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFFD32F2F))
+                            ) { Text("Cancel") }
                         },
                         text = {
                             TimePicker(
                                 state = timePickerState,
                                 colors = TimePickerDefaults.colors(
-                                    selectorColor = Color(0xFF599E29),
-                                    periodSelectorSelectedContainerColor = Color(0xFF599E29).copy(alpha = 0.1f)
+                                    selectorColor = Color(0xFF015DB6),
+                                    periodSelectorSelectedContainerColor = Color(0xFF015DB6).copy(alpha = 0.1f)
                                 )
                             )
                         }
@@ -372,20 +348,20 @@ fun TaskDialog(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Aesthetic Cancel Button
-                OutlinedButton(
+                Button(
                     onClick = onDismiss,
                     modifier = Modifier
                         .weight(1f)
                         .height(52.dp),
                     shape = MaterialTheme.shapes.medium,
-                    border = androidx.compose.foundation.BorderStroke(1.5.dp, Color(0xFFE57373)), // Soft Red border
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFD32F2F)) // Standard Red text
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFD32F2F),
+                        contentColor = Color.White
+                    )
                 ) {
                     Text("Cancel", fontWeight = FontWeight.Bold, fontSize = 14.sp)
                 }
                 
-                // Aesthetic Save Button
                 Button(
                     onClick = { if (title.isNotBlank()) onConfirm(title, description, selectedDateMillis) },
                     enabled = title.isNotBlank(),
@@ -393,8 +369,8 @@ fun TaskDialog(
                         .weight(1f)
                         .height(52.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF599E29), // Theme Green
-                        contentColor = Color.White // Aesthetic contrast
+                        containerColor = Color(0xFF015DB6),
+                        contentColor = Color.White
                     ),
                     shape = MaterialTheme.shapes.medium,
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
