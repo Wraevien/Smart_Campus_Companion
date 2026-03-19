@@ -15,6 +15,7 @@ import com.example.smartcampuscompanion.data.SessionManager
 import com.example.smartcampuscompanion.data.db.DatabaseProvider
 import com.example.smartcampuscompanion.data.repository.TaskRepository
 import com.example.smartcampuscompanion.navigation.Routes
+import com.example.smartcampuscompanion.screens.AnnouncementsScreen
 import com.example.smartcampuscompanion.screens.CampusInfoScreen
 import com.example.smartcampuscompanion.screens.DashboardScreen
 import com.example.smartcampuscompanion.screens.LoginRegister
@@ -53,14 +54,17 @@ fun Screens() {
     val startDestination = if (session.isLoggedIn()) Routes.DASHBOARD else Routes.LOGIN_REGISTER
 
     NavHost(controller, startDestination) {
-
         composable(Routes.LOGIN_REGISTER) { LoginRegister(controller) }
         composable(Routes.LOGIN) { LoginScreen(controller) }
         composable(Routes.REGISTER) { RegisterScreen(controller) }
         composable(Routes.DASHBOARD) { DashboardScreen(controller) }
         composable(Routes.CAMPUS_INFO) { CampusInfoScreen(controller) }
+<<<<<<< HEAD
         composable(Routes.TASK_MANAGER) { 
             TaskManagerScreen(navController = controller, viewModel = taskViewModel) 
         }
+=======
+        composable(Routes.ANNOUNCEMENTS) { AnnouncementsScreen(controller) }
+>>>>>>> c761885fa3313dfbab815bf276d0533db1f8710c
     }
 }

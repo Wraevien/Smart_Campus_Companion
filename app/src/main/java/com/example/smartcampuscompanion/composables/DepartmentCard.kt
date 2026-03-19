@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.smartcampuscompanion.data.Department
+import com.example.smartcampuscompanion.ui.theme.GreenPrimary
 
 @Composable
 fun DepartmentCard(department: Department) {
@@ -35,7 +36,7 @@ fun DepartmentCard(department: Department) {
                 text = department.name,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF015DB6)
+                color = Color(0xFF333333) // Changed from BluePrimary to Dark Gray (Requested)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -59,7 +60,7 @@ fun DepartmentCard(department: Department) {
             Text(
                 text = "Email: ${department.email}",
                 fontSize = 14.sp,
-                color = Color(0xFF015DB6)
+                color = GreenPrimary
             )
 
             Spacer(modifier = Modifier.height(8.dp))
