@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -60,7 +59,11 @@ fun DepartmentCard(department: Department) {
             Text(
                 text = "Email: ${department.email}",
                 fontSize = 14.sp,
+<<<<<<< HEAD
                 color = GreenPrimary
+=======
+                color = GreenPrimary // Updated to Green
+>>>>>>> 36dc1132ec5bfba3f961199382ddee3856d3c2e9
             )
 
             Spacer(modifier = Modifier.height(8.dp))

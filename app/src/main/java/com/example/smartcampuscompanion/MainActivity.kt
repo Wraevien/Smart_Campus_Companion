@@ -57,7 +57,7 @@ fun Screens() {
         composable(Routes.LOGIN_REGISTER) { LoginRegister(controller) }
         composable(Routes.LOGIN) { LoginScreen(controller) }
         composable(Routes.REGISTER) { RegisterScreen(controller) }
-        composable(Routes.DASHBOARD) { DashboardScreen(controller) }
+        composable(Routes.DASHBOARD) { DashboardScreen(controller, taskViewModel) }
         composable(Routes.CAMPUS_INFO) { CampusInfoScreen(controller) }
 <<<<<<< HEAD
         composable(Routes.TASK_MANAGER) { 

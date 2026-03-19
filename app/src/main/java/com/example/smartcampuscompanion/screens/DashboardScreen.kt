@@ -2,9 +2,17 @@ package com.example.smartcampuscompanion.screens
 
 import androidx.compose.foundation.background
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+import androidx.compose.foundation.clickable
+>>>>>>> 36dc1132ec5bfba3f961199382ddee3856d3c2e9
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+<<<<<<< HEAD
 import androidx.compose.material.icons.filled.*
 =======
 import androidx.compose.foundation.clickable
@@ -15,6 +23,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 >>>>>>> c761885fa3313dfbab815bf276d0533db1f8710c
+=======
+import androidx.compose.material.icons.automirrored.outlined.ArrowForward
+import androidx.compose.material.icons.automirrored.outlined.Assignment
+import androidx.compose.material.icons.automirrored.outlined.Logout
+import androidx.compose.material.icons.outlined.*
+>>>>>>> 36dc1132ec5bfba3f961199382ddee3856d3c2e9
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,11 +41,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+<<<<<<< HEAD
 import androidx.lifecycle.viewmodel.compose.viewModel
+=======
+>>>>>>> 36dc1132ec5bfba3f961199382ddee3856d3c2e9
 import androidx.navigation.NavController
 import com.example.smartcampuscompanion.data.Announcement
 import com.example.smartcampuscompanion.data.SessionManager
 import com.example.smartcampuscompanion.navigation.Routes
+<<<<<<< HEAD
 <<<<<<< HEAD
 import kotlinx.coroutines.launch
 =======
@@ -39,10 +57,18 @@ import com.example.smartcampuscompanion.ui.theme.BluePrimary
 import com.example.smartcampuscompanion.ui.theme.GreenPrimary
 import com.example.smartcampuscompanion.viewmodel.AnnouncementViewModel
 >>>>>>> c761885fa3313dfbab815bf276d0533db1f8710c
+=======
+import com.example.smartcampuscompanion.ui.theme.BluePrimary
+import com.example.smartcampuscompanion.ui.theme.GreenPrimary
+import com.example.smartcampuscompanion.viewmodel.TaskViewModel
+import com.example.smartcampuscompanion.data.db.TaskEntity
+import java.text.SimpleDateFormat
+import java.util.*
+>>>>>>> 36dc1132ec5bfba3f961199382ddee3856d3c2e9
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DashboardScreen(controller: NavController) {
+fun DashboardScreen(controller: NavController, taskViewModel: TaskViewModel) {
 
     val context = LocalContext.current
     val session = remember { SessionManager(context) }
@@ -51,82 +77,41 @@ fun DashboardScreen(controller: NavController) {
     val gradient = listOf(Color(0xFFF1F8E9), Color(0xFFE8F5E9), Color(0xFFE3F2FD))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     // drawer state
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+=======
+    // Observe tasks from the provided ViewModel
+    val tasks by taskViewModel.tasks.collectAsState(initial = emptyList())
+    val recentTask = tasks.firstOrNull()
+>>>>>>> 36dc1132ec5bfba3f961199382ddee3856d3c2e9
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet(
-                drawerContainerColor = Color.White,
-                modifier = Modifier.width(300.dp)
-            ) {
-                // drawer header
-                Column(
+    Scaffold(
+        modifier = Modifier.background(brush = Brush.verticalGradient(colors = gradient)),
+        containerColor = Color.Transparent
+    ) { paddingValues ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            // Header: Welcome back, User + Logout
+            item {
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFF599E29))
-                        .padding(24.dp)
+                        .padding(horizontal = 24.dp, vertical = 20.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.AccountCircle,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(48.dp)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "Smart Campus",
-                        color = Color.White,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = username,
-                        color = Color.White.copy(alpha = 0.8f),
-                        fontSize = 14.sp
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                // list of
-                NavigationDrawerItem(
-                    label = { Text("Profile") },
-                    selected = false,
-                    icon = { Icon(Icons.Default.Person, contentDescription = null) },
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                    },
-                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-                )
-
-                NavigationDrawerItem(
-                    label = { Text("Task & Schedule Manager") },
-                    selected = false,
-                    icon = { Icon(Icons.Default.List, contentDescription = null) },
-                    onClick = {
-                        scope.launch { 
-                            drawerState.close()
-                            controller.navigate(Routes.TASK_MANAGER)
-                        }
-                    },
-                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-                )
-            }
-        }
-    ) {
-        // Main Screen UI
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
+                    Column {
                         Text(
-                            "Dashboard",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 22.sp
+                            text = "Welcome back,",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.Gray
                         )
+<<<<<<< HEAD
                     },
                     navigationIcon = {
                         IconButton(onClick = {
@@ -171,6 +156,10 @@ fun DashboardScreen(controller: NavController) {
                         )
                         Text(
                             text = username.replaceFirstChar { it.uppercase() },
+=======
+                        Text(
+                            text = username.replaceFirstChar { char -> char.uppercase() },
+>>>>>>> 36dc1132ec5bfba3f961199382ddee3856d3c2e9
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold,
                             color = if (username.lowercase() == "admin") BluePrimary else GreenPrimary
@@ -178,11 +167,15 @@ fun DashboardScreen(controller: NavController) {
                     }
                     IconButton(
                         onClick = {
+<<<<<<< HEAD
 >>>>>>> c761885fa3313dfbab815bf276d0533db1f8710c
+=======
+>>>>>>> 36dc1132ec5bfba3f961199382ddee3856d3c2e9
                             session.logout()
                             controller.navigate(Routes.LOGIN_REGISTER) {
                                 popUpTo(0) { inclusive = true }
                             }
+<<<<<<< HEAD
 <<<<<<< HEAD
                         }) {
                             Icon(
@@ -198,68 +191,80 @@ fun DashboardScreen(controller: NavController) {
                         actionIconContentColor = Color.White
                     )
                 )
+=======
+                        },
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(Color.White.copy(alpha = 0.5f))
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.Logout,
+                            contentDescription = "Logout",
+                            tint = BluePrimary
+                        )
+                    }
+                }
+>>>>>>> 36dc1132ec5bfba3f961199382ddee3856d3c2e9
             }
-        ) { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .background(brush = Brush.verticalGradient(colors = gradient)),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    shape = RoundedCornerShape(24.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+
+            // Quick Actions Section (LazyRow for scrolling)
+            item {
+                Text(
+                    text = "Quick Actions",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                )
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Column(
+                    item {
+                        QuickActionCard(
+                            title = "Campus Info",
+                            icon = Icons.Outlined.Apartment,
+                            color = GreenPrimary,
+                            onClick = { controller.navigate(Routes.CAMPUS_INFO) }
+                        )
+                    }
+                    item {
+                        QuickActionCard(
+                            title = "Task Manager",
+                            icon = Icons.AutoMirrored.Outlined.Assignment,
+                            color = Color(0xFF673AB7), // Purple for tasks
+                            onClick = { controller.navigate(Routes.TASK_MANAGER) }
+                        )
+                    }
+                }
+            }
+            
+            // Recent Task Section
+            item {
+                Text(
+                    text = "Upcoming Task",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                )
+                if (recentTask != null) {
+                    TaskPreviewCard(task = recentTask) {
+                        controller.navigate(Routes.TASK_MANAGER)
+                    }
+                } else {
+                    Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                            .padding(horizontal = 24.dp, vertical = 16.dp),
+                        shape = RoundedCornerShape(28.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.8f))
                     ) {
-                        Text(
-                            text = "Welcome back,",
-                            fontSize = 24.sp,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-
-                        Text(
-                            text = username,
-                            fontSize = 32.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF599E29),
-                            modifier = Modifier.padding(vertical = 4.dp)
-                        )
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Text(
-                            text = "Smart Campus Companion",
-                            fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-
-                        Spacer(modifier = Modifier.height(32.dp))
-
-                        Button(
-                            onClick = { controller.navigate(Routes.TASK_MANAGER) },
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(56.dp),
-                            shape = RoundedCornerShape(16.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF599E29),
-                                contentColor = Color.White
-                            ),
-                            elevation = ButtonDefaults.buttonElevation(
-                                defaultElevation = 8.dp
-                            )
+                                .padding(24.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
+<<<<<<< HEAD
                             Icon(
                                 imageVector = Icons.Default.List,
                                 contentDescription = null,
@@ -366,6 +371,11 @@ fun DashboardScreen(controller: NavController) {
                             Spacer(modifier = Modifier.width(16.dp))
                             Text("All caught up! No new announcements.", style = MaterialTheme.typography.bodyMedium)
 >>>>>>> c761885fa3313dfbab815bf276d0533db1f8710c
+=======
+                            Icon(Icons.Outlined.CheckCircleOutline, contentDescription = null, tint = GreenPrimary)
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Text("No pending tasks. Great job!", style = MaterialTheme.typography.bodyMedium)
+>>>>>>> 36dc1132ec5bfba3f961199382ddee3856d3c2e9
                         }
                     }
                 }
@@ -375,6 +385,7 @@ fun DashboardScreen(controller: NavController) {
 }
 
 @Composable
+<<<<<<< HEAD
 fun QuickActionCard(
     title: String, 
     icon: ImageVector, 
@@ -384,6 +395,12 @@ fun QuickActionCard(
 ) {
     Card(
         modifier = modifier
+=======
+fun QuickActionCard(title: String, icon: ImageVector, color: Color, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .width(160.dp)
+>>>>>>> 36dc1132ec5bfba3f961199382ddee3856d3c2e9
             .height(140.dp)
             .shadow(8.dp, RoundedCornerShape(28.dp))
             .clickable(onClick = onClick),
@@ -412,15 +429,25 @@ fun QuickActionCard(
                 text = title,
                 color = Color.White,
                 style = MaterialTheme.typography.titleMedium,
+<<<<<<< HEAD
                 fontWeight = FontWeight.Bold,
                 maxLines = 1
+=======
+                fontWeight = FontWeight.Bold
+>>>>>>> 36dc1132ec5bfba3f961199382ddee3856d3c2e9
             )
         }
     }
 }
 
 @Composable
+<<<<<<< HEAD
 fun ModernAnnouncementCard(announcement: Announcement, onClick: () -> Unit) {
+=======
+fun TaskPreviewCard(task: TaskEntity, onClick: () -> Unit) {
+    val dateString = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault()).format(Date(task.dueAtMillis))
+    
+>>>>>>> 36dc1132ec5bfba3f961199382ddee3856d3c2e9
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -431,13 +458,21 @@ fun ModernAnnouncementCard(announcement: Announcement, onClick: () -> Unit) {
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
             Text(
+<<<<<<< HEAD
                 text = announcement.title,
+=======
+                text = task.title,
+>>>>>>> 36dc1132ec5bfba3f961199382ddee3856d3c2e9
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
+<<<<<<< HEAD
                 text = announcement.content,
+=======
+                text = task.description,
+>>>>>>> 36dc1132ec5bfba3f961199382ddee3856d3c2e9
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.Gray,
                 maxLines = 2,
@@ -450,12 +485,21 @@ fun ModernAnnouncementCard(announcement: Announcement, onClick: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
+<<<<<<< HEAD
                     text = announcement.date,
                     style = MaterialTheme.typography.labelSmall,
                     color = Color.Gray
                 )
                 Icon(
                     imageVector = Icons.Outlined.ArrowForward,
+=======
+                    text = "Due: $dateString",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color.Red
+                )
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.ArrowForward,
+>>>>>>> 36dc1132ec5bfba3f961199382ddee3856d3c2e9
                     contentDescription = "View",
                     tint = BluePrimary
                 )

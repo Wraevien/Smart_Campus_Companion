@@ -11,16 +11,13 @@ plugins{
 }
 
 android {
-
-    compileSdk {
-        namespace = "com.example.smartcampuscompanion"
-        version = release(36)
-    }
+    namespace = "com.example.smartcampuscompanion"
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.smartcampuscompanion"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -77,6 +74,7 @@ dependencies {
     //nav import
     implementation("androidx.navigation:navigation-compose:2.9.5")
 
+<<<<<<< HEAD
     // Room
     val room_version = "2.7.1"
     implementation("androidx.room:room-runtime:$room_version")
@@ -86,4 +84,6 @@ dependencies {
 
     // ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
+=======
+>>>>>>> 36dc1132ec5bfba3f961199382ddee3856d3c2e9
 }
