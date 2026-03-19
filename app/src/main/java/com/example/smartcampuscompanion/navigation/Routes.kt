@@ -6,10 +6,8 @@ object Routes {
     const val REGISTER = "register"
     const val DASHBOARD = "dashboard"
     const val CAMPUS_INFO = "campus_info"
-<<<<<<< HEAD
+
     const val TASK_MANAGER = "task_manager"
-}
-=======
     const val ANNOUNCEMENTS = "announcements"
 }
->>>>>>> c761885fa3313dfbab815bf276d0533db1f8710c
+

@@ -44,7 +44,6 @@ fun Screens() {
     val context = LocalContext.current
     val session = remember { SessionManager(context) }
 
-    // Initialize Database, Repository, and ViewModel
     val database = remember { DatabaseProvider.get(context) }
     val repository = remember { TaskRepository(database.taskDao()) }
     val taskViewModel: TaskViewModel = viewModel(
@@ -53,18 +52,15 @@ fun Screens() {
 
     val startDestination = if (session.isLoggedIn()) Routes.DASHBOARD else Routes.LOGIN_REGISTER
 
-    NavHost(controller, startDestination) {
+    NavHost(controller, startDestination = startDestination) {
         composable(Routes.LOGIN_REGISTER) { LoginRegister(controller) }
         composable(Routes.LOGIN) { LoginScreen(controller) }
         composable(Routes.REGISTER) { RegisterScreen(controller) }
         composable(Routes.DASHBOARD) { DashboardScreen(controller, taskViewModel) }
         composable(Routes.CAMPUS_INFO) { CampusInfoScreen(controller) }
-<<<<<<< HEAD
-        composable(Routes.TASK_MANAGER) { 
-            TaskManagerScreen(navController = controller, viewModel = taskViewModel) 
+        composable(Routes.TASK_MANAGER) {
+            TaskManagerScreen(navController = controller, viewModel = taskViewModel)
         }
-=======
         composable(Routes.ANNOUNCEMENTS) { AnnouncementsScreen(controller) }
->>>>>>> c761885fa3313dfbab815bf276d0533db1f8710c
     }
 }
