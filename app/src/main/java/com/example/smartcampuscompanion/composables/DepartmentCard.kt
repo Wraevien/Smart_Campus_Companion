@@ -59,11 +59,8 @@ fun DepartmentCard(department: Department) {
             Text(
                 text = "Email: ${department.email}",
                 fontSize = 14.sp,
-<<<<<<< HEAD
-                color = GreenPrimary
-=======
+
                 color = GreenPrimary // Updated to Green
->>>>>>> 36dc1132ec5bfba3f961199382ddee3856d3c2e9
             )
 
             Spacer(modifier = Modifier.height(8.dp))
