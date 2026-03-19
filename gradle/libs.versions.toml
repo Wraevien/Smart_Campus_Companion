@@ -30,3 +30,11 @@ androidx-compose-material-icons-extended = { group = "androidx.compose.material"
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+<<<<<<< HEAD
+org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+<<<<<<< HEAD
+=======
+>>>>>>> c761885fa3313dfbab815bf276d0533db1f8710c
+=======
+>>>>>>> 36dc1132ec5bfba3f961199382ddee3856d3c2e9
