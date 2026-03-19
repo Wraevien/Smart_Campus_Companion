@@ -19,10 +19,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-<<<<<<< HEAD
-=======
 import androidx.compose.ui.text.style.TextAlign
->>>>>>> c761885fa3313dfbab815bf276d0533db1f8710c
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
