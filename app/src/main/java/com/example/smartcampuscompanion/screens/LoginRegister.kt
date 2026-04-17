@@ -2,120 +2,187 @@ package com.example.smartcampuscompanion.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.example.smartcampuscompanion.R
 import com.example.smartcampuscompanion.navigation.Routes
 
+private val LandingBlue = Color(0xFF015DB6)
+private val LandingGreen = Color(0xFF599E29)
+private val LandingTextPrimary = Color(0xFF1E1E1E)
+private val LandingTextSecondary = Color(0xFF6E6E6E)
+
 @Composable
 fun LoginRegister(controller: NavController) {
-
-    ConstraintLayout(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        val (col, footerText) = createRefs()
-
-        Text(
-            text = "Developed for Mobile Programming II • 2026",
-            color = Color.DarkGray,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp)
-                .constrainAs(footerText) {
-                    bottom.linkTo(parent.bottom)
-                }
+    val backgroundGradient = Brush.verticalGradient(
+        colors = listOf(
+            Color(0xFFDCECF8),
+            Color(0xFFEAF5FC),
+            Color(0xFFF8FCFF)
         )
+    )
 
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Color.Transparent
+    ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(col) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(footerText.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxSize()
+                .background(backgroundGradient)
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .imePadding()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp, vertical = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
+            Spacer(modifier = Modifier.height(8.dp))
 
             Image(
-                painter = painterResource(R.drawable.logo),
+                painter = painterResource(id = R.drawable.logotwo),
                 contentDescription = "Smart Campus Companion",
-                modifier = Modifier.size(180.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(320.dp),
+                contentScale = ContentScale.Fit
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Text(
                 text = "Smart Campus Companion",
-                fontSize = 24.sp,
+                fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF015DB6)
+                color = LandingBlue,
+                textAlign = TextAlign.Center
             )
+
+            Spacer(modifier = Modifier.height(6.dp))
 
             Text(
                 text = "\"Navigating Campus Life Together.\"",
                 fontStyle = FontStyle.Italic,
                 fontSize = 15.sp,
-                color = Color.Gray
+                color = LandingTextSecondary,
+                textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(14.dp))
+
+            Text(
+                text = "Stay updated with campus announcements, schedules, and student tools in one smart companion app.",
+                fontSize = 14.sp,
+                lineHeight = 20.sp,
+                color = LandingTextPrimary.copy(alpha = 0.78f),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(0.9f)
+            )
+
+            Spacer(modifier = Modifier.height(22.dp))
+
+            HorizontalDivider(
+                modifier = Modifier.fillMaxWidth(0.34f),
+                thickness = 1.dp,
+                color = Color(0x33000000)
+            )
+
+            Spacer(modifier = Modifier.height(28.dp))
 
             Button(
                 modifier = Modifier
-                    .width(300.dp)
-                    .height(56.dp),
+                    .fillMaxWidth()
+                    .height(58.dp)
+                    .shadow(
+                        elevation = 8.dp,
+                        shape = RoundedCornerShape(18.dp),
+                        clip = false
+                    ),
                 onClick = {
                     controller.navigate(Routes.LOGIN)
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF015DB6),
+                    containerColor = LandingBlue,
                     contentColor = Color.White
                 ),
-                shape = RoundedCornerShape(16.dp),
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
+                shape = RoundedCornerShape(18.dp),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
             ) {
-                Text("Login", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    text = "Login",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
                 modifier = Modifier
-                    .width(300.dp)
-                    .height(56.dp),
+                    .fillMaxWidth()
+                    .height(58.dp)
+                    .shadow(
+                        elevation = 8.dp,
+                        shape = RoundedCornerShape(18.dp),
+                        clip = false
+                    ),
                 onClick = {
                     controller.navigate(Routes.REGISTER)
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF599E29),
+                    containerColor = LandingGreen,
                     contentColor = Color.White
                 ),
-                shape = RoundedCornerShape(16.dp),
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
+                shape = RoundedCornerShape(18.dp),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
             ) {
-                Text("Get Started", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    text = "Get Started",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
+
+            Spacer(modifier = Modifier.height(42.dp))
+
+            Text(
+                text = "Developed for Mobile Programming II • 2026",
+                color = LandingTextSecondary,
+                textAlign = TextAlign.Center,
+                fontSize = 12.sp
+            )
         }
     }
 }
