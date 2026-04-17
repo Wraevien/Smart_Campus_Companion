@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -29,7 +28,6 @@ import com.example.smartcampuscompanion.composables.ValidationErrorDialog
 import com.example.smartcampuscompanion.data.SessionManager
 import com.example.smartcampuscompanion.navigation.Routes
 import com.example.smartcampuscompanion.ui.theme.BluePrimary
-import com.example.smartcampuscompanion.ui.theme.GreenPrimary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,8 +36,15 @@ fun LoginScreen(controller: NavController) {
     val context = LocalContext.current
     val session = remember { SessionManager(context) }
 
-    // Elegant blue-to-white gradient
-    val gradient = listOf(Color(0xFFE3F2FD), Color(0xFFBBDEFB), Color.White)
+    val colors = MaterialTheme.colorScheme
+
+    val gradient = Brush.verticalGradient(
+        colors = listOf(
+            colors.background,
+            colors.surface,
+            colors.background
+        )
+    )
 
     var userName by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -58,36 +63,36 @@ fun LoginScreen(controller: NavController) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
-            .background(brush = Brush.verticalGradient(colors = gradient))
+            .background(gradient)
     ) {
         val (logo, card, footer) = createRefs()
 
-        // Logo Section
         Image(
             painter = painterResource(R.drawable.logo),
             contentDescription = "Smart Campus Companion",
             modifier = Modifier
-                .size(320.dp)
+                .size(360.dp)
                 .constrainAs(logo) {
-                    top.linkTo(parent.top, margin = 10.dp)
+                    top.linkTo(parent.top, margin = 20.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 }
         )
 
-        // Main Login Card
         Card(
             modifier = Modifier
                 .fillMaxWidth(0.92f)
                 .shadow(20.dp, RoundedCornerShape(40.dp))
                 .constrainAs(card) {
-                    top.linkTo(parent.top)
+                    top.linkTo(logo.bottom, margin = -150.dp)
                     bottom.linkTo(parent.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
             shape = RoundedCornerShape(40.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.95f))
+            colors = CardDefaults.cardColors(
+                containerColor = colors.surface.copy(alpha = 0.95f)
+            )
         ) {
             Column(
                 modifier = Modifier
@@ -99,30 +104,37 @@ fun LoginScreen(controller: NavController) {
                     text = "Welcome,",
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black
+                    color = colors.onSurface
                 )
+
                 Text(
                     text = "Glad to see you!",
                     style = MaterialTheme.typography.titleMedium,
-                    color = Color.Gray,
-                    fontWeight = FontWeight.Normal,
+                    color = colors.onSurfaceVariant,
                     modifier = Modifier.padding(bottom = 32.dp)
                 )
 
                 OutlinedTextField(
                     value = userName,
                     onValueChange = { userName = it },
-                    placeholder = { Text("Username", color = Color.LightGray) },
-                    leadingIcon = { Icon(Icons.Default.Person, contentDescription = null, tint = BluePrimary) },
+                    placeholder = {
+                        Text("Username", color = colors.outline)
+                    },
+                    leadingIcon = {
+                        Icon(Icons.Default.Person, contentDescription = null, tint = BluePrimary)
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp)),
                     shape = RoundedCornerShape(16.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = BluePrimary,
-                        unfocusedBorderColor = Color.LightGray.copy(alpha = 0.5f),
-                        focusedContainerColor = Color(0xFFF5F5F5),
-                        unfocusedContainerColor = Color(0xFFF5F5F5)
+                        unfocusedBorderColor = colors.outline,
+                        focusedContainerColor = colors.surfaceVariant,
+                        unfocusedContainerColor = colors.surfaceVariant,
+                        focusedTextColor = colors.onSurface,
+                        unfocusedTextColor = colors.onSurface,
+                        cursorColor = BluePrimary
                     ),
                     singleLine = true
                 )
@@ -132,8 +144,12 @@ fun LoginScreen(controller: NavController) {
                 OutlinedTextField(
                     value = password,
                     onValueChange = { password = it },
-                    placeholder = { Text("Password", color = Color.LightGray) },
-                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = BluePrimary) },
+                    placeholder = {
+                        Text("Password", color = colors.outline)
+                    },
+                    leadingIcon = {
+                        Icon(Icons.Default.Lock, contentDescription = null, tint = BluePrimary)
+                    },
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -141,9 +157,12 @@ fun LoginScreen(controller: NavController) {
                     shape = RoundedCornerShape(16.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = BluePrimary,
-                        unfocusedBorderColor = Color.LightGray.copy(alpha = 0.5f),
-                        focusedContainerColor = Color(0xFFF5F5F5),
-                        unfocusedContainerColor = Color(0xFFF5F5F5)
+                        unfocusedBorderColor = colors.outline,
+                        focusedContainerColor = colors.surfaceVariant,
+                        unfocusedContainerColor = colors.surfaceVariant,
+                        focusedTextColor = colors.onSurface,
+                        unfocusedTextColor = colors.onSurface,
+                        cursorColor = BluePrimary
                     ),
                     singleLine = true
                 )
@@ -170,7 +189,10 @@ fun LoginScreen(controller: NavController) {
                         .height(60.dp)
                         .shadow(8.dp, RoundedCornerShape(20.dp)),
                     shape = RoundedCornerShape(20.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = BluePrimary)
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = BluePrimary,
+                        contentColor = colors.onPrimary
+                    )
                 ) {
                     Text(
                         "Login",
@@ -181,14 +203,13 @@ fun LoginScreen(controller: NavController) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Replaced Sign Up button with a text link
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         "Don't have an account? ",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray
+                        color = colors.onSurfaceVariant
                     )
                     TextButton(
                         onClick = { controller.navigate("register") },
@@ -208,7 +229,7 @@ fun LoginScreen(controller: NavController) {
         Text(
             text = "Developed for Mobile Programming II • 2026",
             style = MaterialTheme.typography.labelMedium,
-            color = Color.Gray.copy(alpha = 0.7f),
+            color = colors.onSurfaceVariant,
             textAlign = TextAlign.Center,
             modifier = Modifier.constrainAs(footer) {
                 bottom.linkTo(parent.bottom, margin = 24.dp)
