@@ -12,13 +12,13 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,18 +38,15 @@ import androidx.navigation.NavController
 import com.example.smartcampuscompanion.R
 import com.example.smartcampuscompanion.navigation.Routes
 
-private val LandingBlue = Color(0xFF015DB6)
-private val LandingGreen = Color(0xFF599E29)
-private val LandingTextPrimary = Color(0xFF1E1E1E)
-private val LandingTextSecondary = Color(0xFF6E6E6E)
-
 @Composable
 fun LoginRegister(controller: NavController) {
+    val colors = MaterialTheme.colorScheme
+
     val backgroundGradient = Brush.verticalGradient(
         colors = listOf(
-            Color(0xFFDCECF8),
-            Color(0xFFEAF5FC),
-            Color(0xFFF8FCFF)
+            colors.background,
+            colors.surface,
+            colors.background
         )
     )
 
@@ -86,7 +83,7 @@ fun LoginRegister(controller: NavController) {
                 text = "Smart Campus Companion",
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = LandingBlue,
+                color = colors.primary,
                 textAlign = TextAlign.Center
             )
 
@@ -96,7 +93,7 @@ fun LoginRegister(controller: NavController) {
                 text = "\"Navigating Campus Life Together.\"",
                 fontStyle = FontStyle.Italic,
                 fontSize = 15.sp,
-                color = LandingTextSecondary,
+                color = colors.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
 
@@ -106,7 +103,7 @@ fun LoginRegister(controller: NavController) {
                 text = "Stay updated with campus announcements, schedules, and student tools in one smart companion app.",
                 fontSize = 14.sp,
                 lineHeight = 20.sp,
-                color = LandingTextPrimary.copy(alpha = 0.78f),
+                color = colors.onSurface.copy(alpha = 0.78f),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth(0.9f)
             )
@@ -116,7 +113,7 @@ fun LoginRegister(controller: NavController) {
             HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(0.34f),
                 thickness = 1.dp,
-                color = Color(0x33000000)
+                color = colors.outline.copy(alpha = 0.5f)
             )
 
             Spacer(modifier = Modifier.height(28.dp))
@@ -134,8 +131,8 @@ fun LoginRegister(controller: NavController) {
                     controller.navigate(Routes.LOGIN)
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = LandingBlue,
-                    contentColor = Color.White
+                    containerColor = colors.primary,
+                    contentColor = colors.onPrimary
                 ),
                 shape = RoundedCornerShape(18.dp),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
@@ -162,8 +159,8 @@ fun LoginRegister(controller: NavController) {
                     controller.navigate(Routes.REGISTER)
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = LandingGreen,
-                    contentColor = Color.White
+                    containerColor = colors.secondary,
+                    contentColor = colors.onSecondary
                 ),
                 shape = RoundedCornerShape(18.dp),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
@@ -179,7 +176,7 @@ fun LoginRegister(controller: NavController) {
 
             Text(
                 text = "Developed for Mobile Programming II • 2026",
-                color = LandingTextSecondary,
+                color = colors.onSurfaceVariant,
                 textAlign = TextAlign.Center,
                 fontSize = 12.sp
             )
