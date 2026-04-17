@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            SmartCampusCompanionTheme(dynamicColor = false) {
+            SmartCampusCompanionTheme {
                 Screens()
             }
         }
