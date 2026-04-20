@@ -19,138 +19,141 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.smartcampuscompanion.data.Announcement
-import com.example.smartcampuscompanion.ui.theme.BluePrimary
-import com.example.smartcampuscompanion.ui.theme.GreenPrimary
 
 @Composable
 fun AnnouncementCard(
-    announcement: Announcement,
-    onMarkAsRead: (Int) -> Unit
+    announcement : Announcement,
+    onMarkAsRead : (Int) -> Unit,
 ) {
     val isUnread = !announcement.isRead
-    
+    val colors   = MaterialTheme.colorScheme
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 10.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
             .shadow(
-                elevation = if (isUnread) 12.dp else 4.dp,
-                shape = RoundedCornerShape(28.dp),
-                spotColor = Color.Black.copy(alpha = 0.2f)
+                elevation  = if (isUnread) 8.dp else 2.dp,
+                shape      = RoundedCornerShape(24.dp),
+                spotColor  = colors.primary.copy(alpha = 0.15f),
             ),
-        shape = RoundedCornerShape(28.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        )
+        shape  = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(containerColor = colors.surface),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(IntrinsicSize.Min)
+                .height(IntrinsicSize.Min),
         ) {
-            // Subtle Blue indicator for unread
+            // Accent strip for unread
             if (isUnread) {
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .width(6.dp)
-                        .background(BluePrimary)
+                        .width(5.dp)
+                        .background(
+                            colors.primary,
+                            RoundedCornerShape(topStart = 24.dp, bottomStart = 24.dp),
+                        )
                 )
             }
 
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(24.dp)
+                    .padding(
+                        start  = if (isUnread) 18.dp else 22.dp,
+                        end    = 22.dp,
+                        top    = 20.dp,
+                        bottom = 20.dp,
+                    ),
             ) {
+                // Title row
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier          = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Top
+                    verticalAlignment = Alignment.Top,
                 ) {
                     Text(
-                        text = announcement.title,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Medium,
-                        color = Color(0xFF333333), // Changed to Dark Gray (Requested)
-                        modifier = Modifier.weight(1f),
-                        letterSpacing = (-0.3).sp
+                        text       = announcement.title,
+                        style      = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color      = colors.onSurface,
+                        modifier   = Modifier.weight(1f),
                     )
-                    
+
                     if (isUnread) {
                         Surface(
-                            color = BluePrimary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(12.dp),
-                            modifier = Modifier.padding(start = 12.dp)
+                            color    = colors.primary.copy(alpha = 0.10f),
+                            shape    = RoundedCornerShape(12.dp),
+                            modifier = Modifier.padding(start = 12.dp),
                         ) {
                             Text(
-                                text = "NEW",
-                                color = BluePrimary,
-                                fontSize = 10.sp,
+                                text       = "NEW",
+                                color      = colors.primary,
+                                fontSize   = 10.sp,
                                 fontWeight = FontWeight.SemiBold,
-                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                                letterSpacing = 1.sp
+                                modifier   = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                                letterSpacing = 1.sp,
                             )
                         }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(Modifier.height(10.dp))
 
+                // Meta: author + date
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalAlignment     = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    InfoLabel(
-                        icon = Icons.Default.Person,
-                        text = announcement.author,
-                        color = GreenPrimary
+                    AnnouncementInfoLabel(
+                        icon  = Icons.Default.Person,
+                        text  = announcement.author,
+                        color = colors.secondary,
                     )
-                    InfoLabel(
-                        icon = Icons.Default.DateRange,
-                        text = announcement.date,
-                        color = Color.Gray
+                    AnnouncementInfoLabel(
+                        icon  = Icons.Default.DateRange,
+                        text  = announcement.date,
+                        color = colors.onSurfaceVariant,
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(Modifier.height(12.dp))
 
+                // Body
                 Text(
-                    text = announcement.content,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = if (isUnread) Color(0xFF4A4A4A) else Color.Gray,
-                    lineHeight = 24.sp,
-                    fontWeight = FontWeight.Normal
+                    text       = announcement.content,
+                    style      = MaterialTheme.typography.bodyMedium,
+                    color      = if (isUnread) colors.onSurface else colors.onSurfaceVariant,
+                    lineHeight = 22.sp,
                 )
 
+                // Mark as read button
                 if (isUnread) {
-                    Spacer(modifier = Modifier.height(20.dp))
-                    
+                    Spacer(Modifier.height(18.dp))
                     Surface(
-                        onClick = { onMarkAsRead(announcement.id) },
-                        color = BluePrimary,
-                        shape = RoundedCornerShape(16.dp),
-                        modifier = Modifier
-                            .align(Alignment.End)
-                            .shadow(4.dp, RoundedCornerShape(16.dp))
+                        onClick  = { onMarkAsRead(announcement.id) },
+                        color    = colors.primary,
+                        shape    = RoundedCornerShape(14.dp),
+                        modifier = Modifier.align(Alignment.End),
                     ) {
                         Row(
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                            modifier          = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Check,
-                                contentDescription = null,
-                                modifier = Modifier.size(16.dp),
-                                tint = Color.White
+                                null,
+                                modifier = Modifier.size(15.dp),
+                                tint     = colors.onPrimary,
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(Modifier.width(6.dp))
                             Text(
                                 "Mark as read",
-                                color = Color.White,
+                                color      = colors.onPrimary,
                                 fontWeight = FontWeight.Medium,
-                                fontSize = 13.sp
+                                fontSize   = 13.sp,
                             )
                         }
                     }
@@ -161,30 +164,23 @@ fun AnnouncementCard(
 }
 
 @Composable
-fun InfoLabel(
-    icon: ImageVector,
-    text: String,
-    color: Color
-) {
+private fun AnnouncementInfoLabel(icon: ImageVector, text: String, color: Color) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Surface(
-            color = color.copy(alpha = 0.1f),
-            shape = CircleShape,
-            modifier = Modifier.size(24.dp)
+            color    = color.copy(alpha = 0.10f),
+            shape    = CircleShape,
+            modifier = Modifier.size(24.dp),
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                modifier = Modifier.padding(6.dp),
-                tint = color
-            )
+            Box(contentAlignment = Alignment.Center) {
+                Icon(icon, null, modifier = Modifier.size(14.dp), tint = color)
+            }
         }
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(Modifier.width(6.dp))
         Text(
-            text = text,
-            fontSize = 12.sp,
-            color = color,
-            fontWeight = FontWeight.Medium
+            text       = text,
+            fontSize   = 12.sp,
+            color      = color,
+            fontWeight = FontWeight.Medium,
         )
     }
 }
