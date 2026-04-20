@@ -1,121 +1,165 @@
 package com.example.smartcampuscompanion.screens
 
+import androidx.compose.animation.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.example.smartcampuscompanion.R
 import com.example.smartcampuscompanion.navigation.Routes
 
 @Composable
 fun LoginRegister(controller: NavController) {
+    val colors = MaterialTheme.colorScheme
 
-    ConstraintLayout(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        val (col, footerText) = createRefs()
-
-        Text(
-            text = "Developed for Mobile Programming II • 2026",
-            color = Color.DarkGray,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp)
-                .constrainAs(footerText) {
-                    bottom.linkTo(parent.bottom)
-                }
+    val backgroundGradient = Brush.verticalGradient(
+        colors = listOf(
+            colors.background,
+            colors.primaryContainer,
+            colors.background,
         )
+    )
 
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color    = Color.Transparent,
+    ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(col) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(footerText.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
+                .fillMaxSize()
+                .background(backgroundGradient)
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .imePadding()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 28.dp, vertical = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(Modifier.height(8.dp))
 
+            // Logo
             Image(
-                painter = painterResource(R.drawable.logo),
+                painter            = painterResource(id = R.drawable.logotwo),
                 contentDescription = "Smart Campus Companion",
-                modifier = Modifier.size(180.dp)
+                modifier           = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                contentScale       = ContentScale.Fit,
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(Modifier.height(16.dp))
 
             Text(
-                text = "Smart Campus Companion",
-                fontSize = 24.sp,
+                text       = "Smart Campus Companion",
+                fontSize   = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF015DB6)
+                color      = colors.primary,
+                textAlign  = TextAlign.Center,
             )
+
+            Spacer(Modifier.height(6.dp))
 
             Text(
-                text = "\"Navigating Campus Life Together.\"",
+                text      = "\"Navigating Campus Life Together.\"",
                 fontStyle = FontStyle.Italic,
-                fontSize = 15.sp,
-                color = Color.Gray
+                fontSize  = 14.sp,
+                color     = colors.onSurfaceVariant,
+                textAlign = TextAlign.Center,
             )
 
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(Modifier.height(12.dp))
 
+            Text(
+                text       = "Stay updated with campus announcements, schedules, and student tools in one smart companion app.",
+                fontSize   = 14.sp,
+                lineHeight = 20.sp,
+                color      = colors.onSurface.copy(alpha = 0.72f),
+                textAlign  = TextAlign.Center,
+                modifier   = Modifier.fillMaxWidth(0.88f),
+            )
+
+            Spacer(Modifier.height(28.dp))
+
+            HorizontalDivider(
+                modifier  = Modifier.fillMaxWidth(0.3f),
+                thickness = 1.dp,
+                color     = colors.outline.copy(alpha = 0.4f),
+            )
+
+            Spacer(Modifier.height(32.dp))
+
+            // Login button
             Button(
                 modifier = Modifier
-                    .width(300.dp)
-                    .height(56.dp),
-                onClick = {
-                    controller.navigate(Routes.LOGIN)
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF015DB6),
-                    contentColor = Color.White
+                    .fillMaxWidth()
+                    .height(58.dp)
+                    .shadow(elevation = 6.dp, shape = RoundedCornerShape(18.dp), clip = false),
+                onClick  = { controller.navigate(Routes.LOGIN) },
+                colors   = ButtonDefaults.buttonColors(
+                    containerColor = colors.primary,
+                    contentColor   = colors.onPrimary,
                 ),
-                shape = RoundedCornerShape(16.dp),
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
+                shape     = RoundedCornerShape(18.dp),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
             ) {
-                Text("Login", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    text       = "Login",
+                    fontSize   = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(Modifier.height(14.dp))
 
+            // Register button
             Button(
                 modifier = Modifier
-                    .width(300.dp)
-                    .height(56.dp),
-                onClick = {
-                    controller.navigate(Routes.REGISTER)
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF599E29),
-                    contentColor = Color.White
+                    .fillMaxWidth()
+                    .height(58.dp)
+                    .shadow(elevation = 6.dp, shape = RoundedCornerShape(18.dp), clip = false),
+                onClick  = { controller.navigate(Routes.REGISTER) },
+                colors   = ButtonDefaults.buttonColors(
+                    containerColor = colors.secondary,
+                    contentColor   = colors.onSecondary,
                 ),
-                shape = RoundedCornerShape(16.dp),
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
+                shape     = RoundedCornerShape(18.dp),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
             ) {
-                Text("Get Started", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    text       = "Get Started",
+                    fontSize   = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                )
             }
+
+            Spacer(Modifier.height(40.dp))
+
+            Text(
+                text      = "Developed for Mobile Programming II • 2026",
+                color     = colors.onSurfaceVariant.copy(alpha = 0.6f),
+                textAlign = TextAlign.Center,
+                fontSize  = 12.sp,
+            )
+
+            Spacer(Modifier.height(8.dp))
         }
     }
 }
