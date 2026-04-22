@@ -1,4 +1,4 @@
-package com.example.smartcampuscompanion.screens
+package com.example.smartcampuscompanion.ui.dashboard
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

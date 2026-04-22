@@ -16,6 +16,10 @@ import com.example.smartcampuscompanion.data.db.DatabaseProvider
 import com.example.smartcampuscompanion.data.repository.TaskRepository
 import com.example.smartcampuscompanion.navigation.Routes
 import com.example.smartcampuscompanion.screens.*
+import com.example.smartcampuscompanion.ui.announcements.AnnouncementsScreen
+import com.example.smartcampuscompanion.ui.announcements.PostAnnouncementScreen
+import com.example.smartcampuscompanion.ui.dashboard.DashboardScreen
+import com.example.smartcampuscompanion.ui.login.LoginScreen
 import com.example.smartcampuscompanion.ui.theme.SmartCampusCompanionTheme
 import com.example.smartcampuscompanion.viewmodel.TaskViewModel
 import com.example.smartcampuscompanion.viewmodel.TaskViewModelFactory

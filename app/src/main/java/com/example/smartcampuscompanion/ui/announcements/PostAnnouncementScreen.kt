@@ -1,4 +1,4 @@
-package com.example.smartcampuscompanion.screens
+package com.example.smartcampuscompanion.ui.announcements
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn

@@ -1,4 +1,4 @@
-package com.example.smartcampuscompanion.screens
+package com.example.smartcampuscompanion.ui.login
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.Image
