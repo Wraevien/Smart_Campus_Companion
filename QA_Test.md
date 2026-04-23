@@ -60,8 +60,9 @@ This document contains the manual testing conducted on the Smart Companions core
 
 | Issue | Status |
 |------|--------|
-|      |        |
-|      |        |
+| Student Tasks are shared through all students| Resolved|
+|  When creating a new announcement as an admin and immediately click back button, it goes back to the login screen| Resolved|
+| All mark as read announcement status are shared through all students| Resolved|
 
 ---
 
