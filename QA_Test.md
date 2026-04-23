@@ -40,3 +40,33 @@ This document contains the manual testing conducted on the Smart Companions core
 - 
 - 
 - 
+## Test Case 2 (User Roles)
+
+| Feature | Test Scenario | Expected Result | Actual Result | Status |
+|--------|-------------|----------------|--------------|--------|
+| Student Login| Login as student account| View Student Dashboard/Features| View Student Dashboard/Features| Passed|
+| Admin Login| Login as admin account| View Admin Dashboard/Features| View Admin Dashboard/Features| Passed|
+| View Student Announcements| Student navigates to the announcement section| Display Announcement section with posted announcements| Display Announcement section with posted announcements|Passed|
+| Post New Announcement| Admin posts a new announcement| Announcement gets posted| Announcement gets posted| Passed|
+---
+
+## Issues Found
+
+- Student Tasks are shared through all students.
+- When creating a new announcement as an admin and immediately click back button, it goes back to the login screen.
+- All mark as read announcement status are shared through all students.
+
+## Retesting Results
+
+| Issue | Status |
+|------|--------|
+|      |        |
+|      |        |
+
+---
+
+## Notes
+
+- 
+- 
+- 
