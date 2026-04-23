@@ -184,7 +184,7 @@ fun PostAnnouncementScreen(controller: NavController) {
                                     date    = today,
                                 )
                             )
-                            showSuccess = true
+                            controller.popBackStack()
                         }
                     },
                     modifier = Modifier.fillMaxWidth().height(54.dp),

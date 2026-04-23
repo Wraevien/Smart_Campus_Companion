@@ -35,9 +35,16 @@ fun AnnouncementsScreen(controller: NavController) {
     val context   = LocalContext.current
     val session   = remember { SessionManager(context) }
     val isAdmin   = session.getRole() == UserRole.ADMIN
+    val username  = session.getUsername()
     val colors    = MaterialTheme.colorScheme
 
     val viewModel     : AnnouncementViewModel = viewModel()
+    
+    // Set current user to handle per-user read status
+    LaunchedEffect(username) {
+        viewModel.setCurrentUser(username)
+    }
+
     val announcements by viewModel.announcements.collectAsState()
     val unreadCount   by viewModel.unreadCount.collectAsState()
     val isLoading     by viewModel.isLoading.collectAsState(initial = false)

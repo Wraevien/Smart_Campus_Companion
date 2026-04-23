@@ -1,26 +1,26 @@
 package com.example.smartcampuscompanion.data
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AnnouncementDao {
 
-    @Query("SELECT * FROM announcements ORDER BY id DESC")
-    fun getAllAnnouncements(): Flow<List<Announcement>>
+    @Query("""
+        SELECT a.*, EXISTS(SELECT 1 FROM announcement_read_status rs WHERE rs.announcementId = a.id AND rs.username = :username) as isRead 
+        FROM announcements a ORDER BY a.id DESC
+    """)
+    fun getAllAnnouncements(username: String): Flow<List<AnnouncementWithStatus>>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun markAsRead(status: AnnouncementReadStatus)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAnnouncement(announcement: Announcement)
 
-    @Update
-    suspend fun updateAnnouncement(announcement: Announcement)
-
-    @Query("UPDATE announcements SET isRead = 1 WHERE id = :id")
-    suspend fun markAsRead(id: Int)
-
-    @Query("SELECT COUNT(*) FROM announcements WHERE isRead = 0")
-    fun getUnreadCount(): Flow<Int>
+    @Query("""
+        SELECT COUNT(*) FROM announcements a 
+        WHERE NOT EXISTS(SELECT 1 FROM announcement_read_status rs WHERE rs.announcementId = a.id AND rs.username = :username)
+    """)
+    fun getUnreadCount(username: String): Flow<Int>
 }
