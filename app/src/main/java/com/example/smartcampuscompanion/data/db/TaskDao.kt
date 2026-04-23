@@ -6,8 +6,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TaskDao {
 
-    @Query("SELECT * FROM tasks ORDER BY dueAtMillis ASC")
-    fun observeTasks(): Flow<List<TaskEntity>>
+    @Query("SELECT * FROM tasks WHERE ownerUsername = :username ORDER BY dueAtMillis ASC")
+    fun observeTasks(username: String): Flow<List<TaskEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(task: TaskEntity)

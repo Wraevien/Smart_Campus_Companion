@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [Announcement::class], version = 1, exportSchema = false)
+@Database(entities = [Announcement::class, AnnouncementReadStatus::class], version = 2, exportSchema = false)
 abstract class AnnouncementDatabase : RoomDatabase() {
 
     abstract fun announcementDao(): AnnouncementDao
@@ -25,6 +25,7 @@ abstract class AnnouncementDatabase : RoomDatabase() {
                     AnnouncementDatabase::class.java,
                     "announcement_database"
                 )
+                    .fallbackToDestructiveMigration()
                     .addCallback(object : Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)

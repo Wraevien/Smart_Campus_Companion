@@ -14,7 +14,8 @@ object DatabaseProvider {
                 context.applicationContext,
                 AppDatabase::class.java,
                 "smart_campus.db"
-            ).build()
+            ).fallbackToDestructiveMigration()
+                .build()
             INSTANCE = instance
             instance
         }

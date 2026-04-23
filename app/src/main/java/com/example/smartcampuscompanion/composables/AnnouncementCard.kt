@@ -18,11 +18,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.smartcampuscompanion.data.Announcement
+import com.example.smartcampuscompanion.data.AnnouncementWithStatus
 
 @Composable
 fun AnnouncementCard(
-    announcement : Announcement,
+    announcement : AnnouncementWithStatus,
     onMarkAsRead : (Int) -> Unit,
 ) {
     val isUnread = !announcement.isRead

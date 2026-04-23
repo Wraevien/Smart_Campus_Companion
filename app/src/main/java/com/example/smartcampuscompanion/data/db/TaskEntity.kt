@@ -9,5 +9,6 @@ data class TaskEntity(
     val id: Long = 0,
     val title: String,
     val description: String = "",
-    val dueAtMillis: Long
+    val dueAtMillis: Long,
+    val ownerUsername: String = "" // Added to separate tasks by student
 )

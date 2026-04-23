@@ -1,4 +1,4 @@
-package com.example.smartcampuscompanion.screens
+package com.example.smartcampuscompanion.ui.announcements
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -184,7 +184,7 @@ fun PostAnnouncementScreen(controller: NavController) {
                                     date    = today,
                                 )
                             )
-                            showSuccess = true
+                            controller.popBackStack()
                         }
                     },
                     modifier = Modifier.fillMaxWidth().height(54.dp),

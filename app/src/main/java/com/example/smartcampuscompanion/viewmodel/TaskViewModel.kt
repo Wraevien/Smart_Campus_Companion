@@ -4,18 +4,27 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartcampuscompanion.data.db.TaskEntity
 import com.example.smartcampuscompanion.data.repository.TaskRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
 
-    val tasks = repository.tasks
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            emptyList()
-        )
+    private val _currentUser = MutableStateFlow("")
+    
+    fun setCurrentUser(username: String) {
+        _currentUser.value = username
+    }
+
+    val tasks = _currentUser.flatMapLatest { username ->
+        repository.observeTasks(username)
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        emptyList()
+    )
 
     fun upsertTask(
         id: Long = 0,
@@ -29,7 +38,8 @@ class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
                     id = id,
                     title = title,
                     description = description,
-                    dueAtMillis = dueAtMillis
+                    dueAtMillis = dueAtMillis,
+                    ownerUsername = _currentUser.value
                 )
             )
         }

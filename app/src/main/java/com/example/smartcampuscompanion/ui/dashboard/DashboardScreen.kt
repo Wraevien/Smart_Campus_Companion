@@ -1,4 +1,4 @@
-package com.example.smartcampuscompanion.screens
+package com.example.smartcampuscompanion.ui.dashboard
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -48,6 +48,13 @@ fun DashboardScreen(
 
     val tasks       by taskViewModel.tasks.collectAsState(initial = emptyList())
     val announcementVm: AnnouncementViewModel = viewModel()
+    
+    // Set current user for ViewModels to separate data
+    LaunchedEffect(username) {
+        taskViewModel.setCurrentUser(username)
+        announcementVm.setCurrentUser(username)
+    }
+
     val unreadCount by announcementVm.unreadCount.collectAsState()
     val recentTask  = tasks.firstOrNull()
 

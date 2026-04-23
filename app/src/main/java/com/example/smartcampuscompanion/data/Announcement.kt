@@ -10,6 +10,21 @@ data class Announcement(
     val title: String,
     val content: String,
     val author: String,
+    val date: String
+)
+
+@Entity(tableName = "announcement_read_status", primaryKeys = ["announcementId", "username"])
+data class AnnouncementReadStatus(
+    val announcementId: Int,
+    val username: String,
+    val isRead: Boolean = true
+)
+
+data class AnnouncementWithStatus(
+    val id: Int,
+    val title: String,
+    val content: String,
+    val author: String,
     val date: String,
-    val isRead: Boolean = false
+    val isRead: Boolean
 )
