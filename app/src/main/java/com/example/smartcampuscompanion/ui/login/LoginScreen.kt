@@ -57,14 +57,26 @@ fun LoginScreen(controller: NavController) {
     var userNameError by remember { mutableStateOf<String?>(null) }
     var passwordError by remember { mutableStateOf<String?>(null) }
 
+    var selectedRole by remember { mutableStateOf(UserRole.STUDENT) }
+
     var showEmptyDialog by remember { mutableStateOf(false) }
     var showErrorDialog by remember { mutableStateOf(false) }
+    var errorMessage    by remember { mutableStateOf<String?>(null) }
 
     if (showEmptyDialog) {
         ValidationErrorDialog(onDismiss = { showEmptyDialog = false })
     }
     if (showErrorDialog) {
-        LoginErrorDialog(onDismiss = { showErrorDialog = false })
+        AlertDialog(
+            onDismissRequest = { showErrorDialog = false; errorMessage = null },
+            title = { Text("Login Failed") },
+            text = { Text(errorMessage ?: "Please check your credentials and try again.") },
+            confirmButton = {
+                Button(onClick = { showErrorDialog = false; errorMessage = null }) {
+                    Text("OK")
+                }
+            }
+        )
     }
 
     ConstraintLayout(
@@ -132,6 +144,7 @@ fun LoginScreen(controller: NavController) {
                     modifier       = Modifier.fillMaxWidth(),
                     shape          = RoundedCornerShape(16.dp),
                     singleLine     = true,
+                    enabled        = !isLoading,
                     colors         = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor      = BluePrimary,
                         unfocusedBorderColor    = colors.outline,
@@ -172,6 +185,7 @@ fun LoginScreen(controller: NavController) {
                     modifier       = Modifier.fillMaxWidth(),
                     shape          = RoundedCornerShape(16.dp),
                     singleLine     = true,
+                    enabled        = !isLoading,
                     colors         = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor      = BluePrimary,
                         unfocusedBorderColor    = colors.outline,
@@ -184,7 +198,34 @@ fun LoginScreen(controller: NavController) {
                     ),
                 )
 
-                Spacer(Modifier.height(28.dp))
+                Spacer(Modifier.height(12.dp))
+
+                // ── Role Selection ──────────────────────────
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(
+                            selected = selectedRole == UserRole.STUDENT,
+                            onClick = { selectedRole = UserRole.STUDENT },
+                            colors = RadioButtonDefaults.colors(selectedColor = BluePrimary)
+                        )
+                        Text("Student", color = colors.onSurface)
+                    }
+                    Spacer(Modifier.width(20.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(
+                            selected = selectedRole == UserRole.ADMIN,
+                            onClick = { selectedRole = UserRole.ADMIN },
+                            colors = RadioButtonDefaults.colors(selectedColor = BluePrimary)
+                        )
+                        Text("Admin", color = colors.onSurface)
+                    }
+                }
+
+                Spacer(Modifier.height(20.dp))
 
                 // ── Login button ────────────────────────────
                 Button(
@@ -200,23 +241,43 @@ fun LoginScreen(controller: NavController) {
                         }
                         if (!valid) return@Button
 
-                        if (userName == "admin" && password == "admin") {
-                            isLoading = true
-                            // ✅ Save role as ADMIN
-                            session.login(userName, UserRole.ADMIN)
-                            controller.navigate(Routes.DASHBOARD) {
-                                popUpTo(Routes.LOGIN) { inclusive = true }
+                        isLoading = true
+                        
+                        // Firebase Auth Login
+                        val auth = com.google.firebase.auth.FirebaseAuth.getInstance()
+                        val email = if (userName.contains("@")) userName else "$userName@campus.com"
+                        auth.signInWithEmailAndPassword(email, password)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    val uid = auth.currentUser?.uid ?: ""
+                                    // Fetch role from Firestore
+                                    com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                                        .collection("users").document(uid).get()
+                                        .addOnSuccessListener { doc ->
+                                            val roleStr = doc.getString("role") ?: "STUDENT"
+                                            val dbRole = if (roleStr == "ADMIN") UserRole.ADMIN else UserRole.STUDENT
+                                            
+                                            // Check if selected role matches database role
+                                            if (dbRole == selectedRole) {
+                                                session.login(userName, dbRole, uid)
+                                                controller.navigate(Routes.DASHBOARD) {
+                                                    popUpTo(Routes.LOGIN) { inclusive = true }
+                                                }
+                                            } else {
+                                                isLoading = false
+                                                errorMessage = "Role mismatch: You are logged in as ${dbRole.name}"
+                                                showErrorDialog = true
+                                            }
+                                        }
+                                        .addOnFailureListener {
+                                            isLoading = false
+                                            showErrorDialog = true
+                                        }
+                                } else {
+                                    isLoading = false
+                                    showErrorDialog = true
+                                }
                             }
-                        } else if (password.length >= 6) {
-                            isLoading = true
-                            // ✅ Save role as STUDENT for any other valid user
-                            session.login(userName, UserRole.STUDENT)
-                            controller.navigate(Routes.DASHBOARD) {
-                                popUpTo(Routes.LOGIN) { inclusive = true }
-                            }
-                        } else {
-                            showErrorDialog = true
-                        }
                     },
                     modifier  = Modifier
                         .fillMaxWidth()
@@ -231,7 +292,7 @@ fun LoginScreen(controller: NavController) {
                 ) {
                     if (isLoading) {
                         CircularProgressIndicator(
-                            modifier    = Modifier.size(20.dp),
+                            modifier    = Modifier.size(24.dp),
                             color       = colors.onPrimary,
                             strokeWidth = 2.dp,
                         )
@@ -255,6 +316,7 @@ fun LoginScreen(controller: NavController) {
                     TextButton(
                         onClick        = { controller.navigate("register") },
                         contentPadding = PaddingValues(0.dp),
+                        enabled        = !isLoading,
                     ) {
                         Text(
                             "Sign up",

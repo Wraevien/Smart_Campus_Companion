@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -55,6 +56,39 @@ fun RegisterScreen(controller: NavController) {
     var userNameError by remember { mutableStateOf<String?>(null) }
     var passwordError by remember { mutableStateOf<String?>(null) }
     var confirmError  by remember { mutableStateOf<String?>(null) }
+    
+    var selectedRole by remember { mutableStateOf(UserRole.STUDENT) }
+    
+    var isLoading by remember { mutableStateOf(false) }
+    var showSuccessDialog by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    if (showSuccessDialog) {
+        AlertDialog(
+            onDismissRequest = { showSuccessDialog = false },
+            title = { Text("Account Created") },
+            text = { Text("Your account has been registered successfully. Please log in.") },
+            confirmButton = {
+                Button(onClick = { 
+                    showSuccessDialog = false
+                    controller.navigate(Routes.LOGIN) {
+                        popUpTo(Routes.LOGIN_REGISTER) { inclusive = true }
+                    }
+                }) { Text("OK") }
+            }
+        )
+    }
+
+    if (errorMessage != null) {
+        AlertDialog(
+            onDismissRequest = { errorMessage = null },
+            title = { Text("Registration Failed") },
+            text = { Text(errorMessage!!) },
+            confirmButton = {
+                Button(onClick = { errorMessage = null }) { Text("Retry") }
+            }
+        )
+    }
 
     ConstraintLayout(
         modifier = Modifier
@@ -124,6 +158,7 @@ fun RegisterScreen(controller: NavController) {
                     modifier       = Modifier.fillMaxWidth(),
                     shape          = RoundedCornerShape(16.dp),
                     singleLine     = true,
+                    enabled        = !isLoading,
                     colors         = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor      = GreenPrimary,
                         unfocusedBorderColor    = colors.outline,
@@ -164,6 +199,7 @@ fun RegisterScreen(controller: NavController) {
                     modifier       = Modifier.fillMaxWidth(),
                     shape          = RoundedCornerShape(16.dp),
                     singleLine     = true,
+                    enabled        = !isLoading,
                     colors         = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor      = GreenPrimary,
                         unfocusedBorderColor    = colors.outline,
@@ -204,6 +240,7 @@ fun RegisterScreen(controller: NavController) {
                     modifier       = Modifier.fillMaxWidth(),
                     shape          = RoundedCornerShape(16.dp),
                     singleLine     = true,
+                    enabled        = !isLoading,
                     colors         = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor      = GreenPrimary,
                         unfocusedBorderColor    = colors.outline,
@@ -216,7 +253,34 @@ fun RegisterScreen(controller: NavController) {
                     ),
                 )
 
-                Spacer(Modifier.height(28.dp))
+                Spacer(Modifier.height(12.dp))
+
+                // ── Role Selection ──────────────────────────
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(
+                            selected = selectedRole == UserRole.STUDENT,
+                            onClick = { selectedRole = UserRole.STUDENT },
+                            colors = RadioButtonDefaults.colors(selectedColor = GreenPrimary)
+                        )
+                        Text("Student", color = colors.onSurface)
+                    }
+                    Spacer(Modifier.width(20.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(
+                            selected = selectedRole == UserRole.ADMIN,
+                            onClick = { selectedRole = UserRole.ADMIN },
+                            colors = RadioButtonDefaults.colors(selectedColor = GreenPrimary)
+                        )
+                        Text("Admin", color = colors.onSurface)
+                    }
+                }
+
+                Spacer(Modifier.height(20.dp))
 
                 // ── Register button ─────────────────────────
                 Button(
@@ -232,11 +296,32 @@ fun RegisterScreen(controller: NavController) {
                             confirmError = "Passwords do not match"; valid = false
                         }
                         if (valid) {
-                            // ✅ Registered users are always STUDENT role
-                            session.login(userName, UserRole.STUDENT)
-                            controller.navigate(Routes.DASHBOARD) {
-                                popUpTo(Routes.LOGIN_REGISTER) { inclusive = true }
-                            }
+                            isLoading = true
+                            val auth = com.google.firebase.auth.FirebaseAuth.getInstance()
+                            auth.createUserWithEmailAndPassword(userName + "@campus.com", password) // dummy email for username-based login
+                                .addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        val uid = auth.currentUser?.uid ?: ""
+                                        val userData = mapOf(
+                                            "uid" to uid,
+                                            "username" to userName,
+                                            "role" to selectedRole.name
+                                        )
+                                        com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                                            .collection("users").document(uid).set(userData)
+                                            .addOnSuccessListener {
+                                                isLoading = false
+                                                showSuccessDialog = true
+                                            }
+                                            .addOnFailureListener { e ->
+                                                isLoading = false
+                                                errorMessage = e.localizedMessage ?: "Failed to save profile"
+                                            }
+                                    } else {
+                                        isLoading = false
+                                        errorMessage = task.exception?.localizedMessage ?: "Registration failed"
+                                    }
+                                }
                         }
                     },
                     modifier  = Modifier
@@ -244,16 +329,21 @@ fun RegisterScreen(controller: NavController) {
                         .height(56.dp)
                         .shadow(6.dp, RoundedCornerShape(18.dp)),
                     shape     = RoundedCornerShape(18.dp),
+                    enabled   = !isLoading,
                     colors    = ButtonDefaults.buttonColors(
                         containerColor = GreenPrimary,
                         contentColor   = colors.onPrimary,
                     ),
                 ) {
-                    Text(
-                        "Register",
-                        style      = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                    )
+                    if (isLoading) {
+                        CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
+                    } else {
+                        Text(
+                            "Register",
+                            style      = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
                 }
 
                 Spacer(Modifier.height(16.dp))

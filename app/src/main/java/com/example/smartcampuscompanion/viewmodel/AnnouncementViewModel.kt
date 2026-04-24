@@ -4,9 +4,8 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartcampuscompanion.data.Announcement
-import com.example.smartcampuscompanion.data.AnnouncementDatabase
-import com.example.smartcampuscompanion.data.AnnouncementRepository
 import com.example.smartcampuscompanion.data.AnnouncementWithStatus
+import com.example.smartcampuscompanion.data.repository.AnnouncementRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -33,8 +32,7 @@ class AnnouncementViewModel(application: Application) : AndroidViewModel(applica
     val unreadCount: StateFlow<Int>
 
     init {
-        val dao = AnnouncementDatabase.getDatabase(application).announcementDao()
-        repository = AnnouncementRepository(dao)
+        repository = AnnouncementRepository()
 
         announcements = _currentUser.flatMapLatest { username ->
             repository.getAllAnnouncements(username)
@@ -53,7 +51,7 @@ class AnnouncementViewModel(application: Application) : AndroidViewModel(applica
         )
     }
 
-    fun markAsRead(id: Int) {
+    fun markAsRead(id: String) {
         viewModelScope.launch {
             _isLoading.value = true
             try {

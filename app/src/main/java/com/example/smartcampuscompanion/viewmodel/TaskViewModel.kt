@@ -2,7 +2,7 @@ package com.example.smartcampuscompanion.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.smartcampuscompanion.data.db.TaskEntity
+import com.example.smartcampuscompanion.data.Task
 import com.example.smartcampuscompanion.data.repository.TaskRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -10,16 +10,16 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
+class TaskViewModel(private val repository: TaskRepository = TaskRepository()) : ViewModel() {
 
-    private val _currentUser = MutableStateFlow("")
+    private val _currentUserUid = MutableStateFlow("")
     
-    fun setCurrentUser(username: String) {
-        _currentUser.value = username
+    fun setCurrentUser(uid: String) {
+        _currentUserUid.value = uid
     }
 
-    val tasks = _currentUser.flatMapLatest { username ->
-        repository.observeTasks(username)
+    val tasks = _currentUserUid.flatMapLatest { uid ->
+        repository.observeTasks(uid)
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
@@ -27,25 +27,25 @@ class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
     )
 
     fun upsertTask(
-        id: Long = 0,
+        id: String = "",
         title: String,
         description: String,
         dueAtMillis: Long
     ) {
         viewModelScope.launch {
             repository.upsert(
-                TaskEntity(
+                Task(
                     id = id,
                     title = title,
                     description = description,
                     dueAtMillis = dueAtMillis,
-                    ownerUsername = _currentUser.value
+                    ownerUid = _currentUserUid.value
                 )
             )
         }
     }
 
-    fun deleteTask(id: Long) {
+    fun deleteTask(id: String) {
         viewModelScope.launch {
             repository.deleteById(id)
         }
