@@ -74,7 +74,7 @@ This document contains the manual testing conducted on the Smart Companions core
 
 ## Issues Found
 
-- Cannot create account if the username textfield has spaces
+- 
 
 
 ## Retesting Results
