@@ -9,6 +9,7 @@ class SessionManager(context: Context) {
 
     fun isLoggedIn(): Boolean = prefs.getBoolean(KEY_LOGGED_IN, false)
     fun getUsername(): String = prefs.getString(KEY_USERNAME, "") ?: ""
+    fun getUid(): String = prefs.getString(KEY_UID, "") ?: ""
 
     fun getRole(): UserRole {
         val stored = prefs.getString(KEY_ROLE, UserRole.STUDENT.name) ?: UserRole.STUDENT.name
@@ -25,11 +26,12 @@ class SessionManager(context: Context) {
     }
 
     // ── Auth ──────────────────────────────────────────────────────────
-    fun login(username: String, role: UserRole = UserRole.STUDENT) {
+    fun login(username: String, role: UserRole = UserRole.STUDENT, uid: String = "") {
         prefs.edit()
             .putBoolean(KEY_LOGGED_IN, true)
             .putString(KEY_USERNAME, username)
             .putString(KEY_ROLE, role.name)
+            .putString(KEY_UID, uid)
             .apply()
     }
 
@@ -45,5 +47,6 @@ class SessionManager(context: Context) {
         private const val KEY_USERNAME  = "username"
         private const val KEY_ROLE      = "role"
         private const val KEY_DARK_MODE = "dark_mode"
+        private const val KEY_UID       = "uid"
     }
 }

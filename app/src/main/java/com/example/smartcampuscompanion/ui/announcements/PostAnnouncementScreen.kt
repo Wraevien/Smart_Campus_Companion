@@ -182,6 +182,7 @@ fun PostAnnouncementScreen(controller: NavController) {
                                     content = content.trim(),
                                     author  = author,
                                     date    = today,
+                                    readBy  = emptyList()
                                 )
                             )
                             controller.popBackStack()

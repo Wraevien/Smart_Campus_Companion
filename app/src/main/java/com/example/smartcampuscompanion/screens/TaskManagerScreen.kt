@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.smartcampuscompanion.composables.AppTopBar
-import com.example.smartcampuscompanion.data.db.TaskEntity
+import com.example.smartcampuscompanion.data.Task
 import com.example.smartcampuscompanion.viewmodel.TaskViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -35,7 +35,7 @@ private val TaskAccent = androidx.compose.ui.graphics.Color(0xFF7C3AED)
 fun TaskManagerScreen(navController: NavController, viewModel: TaskViewModel) {
     val tasks         by viewModel.tasks.collectAsState()
     var showAddDialog by remember { mutableStateOf(false) }
-    var taskToEdit    by remember { mutableStateOf<TaskEntity?>(null) }
+    var taskToEdit    by remember { mutableStateOf<Task?>(null) }
     val colors        = MaterialTheme.colorScheme
 
     Scaffold(
@@ -136,7 +136,7 @@ fun TaskManagerScreen(navController: NavController, viewModel: TaskViewModel) {
                 onDismiss = { showAddDialog = false },
                 onConfirm = { title, desc, millis ->
                     viewModel.upsertTask(
-                        id           = taskToEdit?.id ?: 0,
+                        id           = taskToEdit?.id ?: "",
                         title        = title,
                         description  = desc,
                         dueAtMillis  = millis,
@@ -149,7 +149,7 @@ fun TaskManagerScreen(navController: NavController, viewModel: TaskViewModel) {
 }
 
 @Composable
-fun ModernTaskItem(task: TaskEntity, onEdit: () -> Unit, onDelete: () -> Unit) {
+fun ModernTaskItem(task: Task, onEdit: () -> Unit, onDelete: () -> Unit) {
     val colors     = MaterialTheme.colorScheme
     val dateString = SimpleDateFormat("MMM dd, yyyy • hh:mm a", Locale.getDefault()).format(Date(task.dueAtMillis))
 
@@ -220,7 +220,7 @@ fun ModernTaskItem(task: TaskEntity, onEdit: () -> Unit, onDelete: () -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ModernTaskDialog(
-    task      : TaskEntity?,
+    task      : Task?,
     onDismiss : () -> Unit,
     onConfirm : (String, String, Long) -> Unit,
 ) {

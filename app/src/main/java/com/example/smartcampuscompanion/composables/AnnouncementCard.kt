@@ -23,7 +23,7 @@ import com.example.smartcampuscompanion.data.AnnouncementWithStatus
 @Composable
 fun AnnouncementCard(
     announcement : AnnouncementWithStatus,
-    onMarkAsRead : (Int) -> Unit,
+    onMarkAsRead : (String) -> Unit,
 ) {
     val isUnread = !announcement.isRead
     val colors   = MaterialTheme.colorScheme

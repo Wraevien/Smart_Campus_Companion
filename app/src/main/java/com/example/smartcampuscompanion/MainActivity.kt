@@ -12,7 +12,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.smartcampuscompanion.data.SessionManager
-import com.example.smartcampuscompanion.data.db.DatabaseProvider
 import com.example.smartcampuscompanion.data.repository.TaskRepository
 import com.example.smartcampuscompanion.navigation.Routes
 import com.example.smartcampuscompanion.screens.*
@@ -22,7 +21,6 @@ import com.example.smartcampuscompanion.ui.dashboard.DashboardScreen
 import com.example.smartcampuscompanion.ui.login.LoginScreen
 import com.example.smartcampuscompanion.ui.theme.SmartCampusCompanionTheme
 import com.example.smartcampuscompanion.viewmodel.TaskViewModel
-import com.example.smartcampuscompanion.viewmodel.TaskViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,9 +44,7 @@ fun Screens() {
     val context    = LocalContext.current
     val session    = remember { SessionManager(context) }
 
-    val database      = remember { DatabaseProvider.get(context) }
-    val repository    = remember { TaskRepository(database.taskDao()) }
-    val taskViewModel: TaskViewModel = viewModel(factory = TaskViewModelFactory(repository))
+    val taskViewModel: TaskViewModel = viewModel()
 
     val startDestination = if (session.isLoggedIn()) Routes.SPLASH else Routes.SPLASH
 

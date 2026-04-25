@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("org.jetbrains.kotlin.kapt")
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -73,6 +74,11 @@ dependencies {
 
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.9.5")
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
 
     // Room
     val roomVersion = "2.7.1"

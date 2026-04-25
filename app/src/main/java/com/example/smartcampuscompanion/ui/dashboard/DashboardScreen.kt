@@ -29,7 +29,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.smartcampuscompanion.data.SessionManager
 import com.example.smartcampuscompanion.data.UserRole
-import com.example.smartcampuscompanion.data.db.TaskEntity
+import com.example.smartcampuscompanion.data.Task
 import com.example.smartcampuscompanion.navigation.Routes
 import com.example.smartcampuscompanion.viewmodel.AnnouncementViewModel
 import com.example.smartcampuscompanion.viewmodel.TaskViewModel
@@ -44,14 +44,15 @@ fun DashboardScreen(
     val context     = LocalContext.current
     val session     = remember { SessionManager(context) }
     val username    = session.getUsername()
+    val uid         = session.getUid()
     val isAdmin     = session.getRole() == UserRole.ADMIN
 
     val tasks       by taskViewModel.tasks.collectAsState(initial = emptyList())
     val announcementVm: AnnouncementViewModel = viewModel()
     
     // Set current user for ViewModels to separate data
-    LaunchedEffect(username) {
-        taskViewModel.setCurrentUser(username)
+    LaunchedEffect(username, uid) {
+        taskViewModel.setCurrentUser(uid)
         announcementVm.setCurrentUser(username)
     }
 
@@ -374,7 +375,7 @@ private fun StatCard(
 }
 
 @Composable
-private fun TaskPreviewCard(task: TaskEntity, onClick: () -> Unit) {
+private fun TaskPreviewCard(task: Task, onClick: () -> Unit) {
     val colors     = MaterialTheme.colorScheme
     val taskColor  = Color(0xFF7C3AED)
     val dateString = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault()).format(Date(task.dueAtMillis))
