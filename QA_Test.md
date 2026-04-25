@@ -35,11 +35,6 @@ This document contains the manual testing conducted on the Smart Companions core
 
 ---
 
-## Notes
-
-- 
-- 
-- 
 ## Test Case 2 (User Roles)
 
 | Feature | Test Scenario | Expected Result | Actual Result | Status |
@@ -66,8 +61,25 @@ This document contains the manual testing conducted on the Smart Companions core
 
 ---
 
-## Notes
+## Test Case 3 (Backend Data Integration)
 
-- 
-- 
-- 
+| Feature | Test Scenario | Expected Result | Actual Result | Status |
+|--------|-------------|----------------|--------------|--------|
+| Store Student Account in Firestore| Creating a Student Account| Account reflects in Firestore Database| Account Reflected in Firestore Database| Passed|
+| Store Admin Account in Firestore| Creating an Admin Account| Account reflects in Firestore Database| Account Reflected in Firestore Database| Passed|
+| Store Created Tasks in Firestore| Creating a Task| Created Task reflects in Firestore Database| Task Reflected in Firestore Database| Passed|
+| Store Created Announcements in Firestore| Create an Announcement| Created Announcement reflects in Firestore Database| Created Announcement Reflecteed in Firestore Database| Passed|
+| Display Created announcement to students| Student checks announcement module| Display Admin Created Announcement| Displays Admin Created Announcemnet| Passed|
+---
+
+## Issues Found
+
+- Cannot create account if the username textfield has spaces
+
+
+## Retesting Results
+
+| Issue | Status |
+|------|--------|
+
+---
