@@ -83,3 +83,24 @@ This document contains the manual testing conducted on the Smart Companions core
 |------|--------|
 
 ---
+
+## Test Case 5 (Settings-Notifications)
+
+| Feature | Test Scenario | Expected Result | Actual Result | Status |
+|--------|-------------|----------------|--------------|--------|
+| Notify announcements when posted| Admin posts a new announcement| Student gets notified about the announcement| Passed|
+| Notify announcements when posted| Admin posts a new announcement| Admin gets notified about the announcement| Passed|
+
+---
+
+## Issues Found
+
+- 
+
+
+## Retesting Results
+
+| Issue | Status |
+|------|--------|
+
+---
