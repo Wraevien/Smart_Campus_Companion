@@ -32,6 +32,8 @@ import com.example.smartcampuscompanion.data.SessionManager
 import com.example.smartcampuscompanion.data.UserRole
 import com.example.smartcampuscompanion.navigation.Routes
 import com.example.smartcampuscompanion.ui.theme.BluePrimary
+import com.example.smartcampuscompanion.util.NotificationHelper
+import com.example.smartcampuscompanion.util.RemoteConfigManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,6 +41,7 @@ fun LoginScreen(controller: NavController) {
 
     val context = LocalContext.current
     val session = remember { SessionManager(context) }
+    val notificationHelper = remember { NotificationHelper(context) }
     val colors  = MaterialTheme.colorScheme
 
     val gradient = Brush.verticalGradient(
@@ -66,6 +69,7 @@ fun LoginScreen(controller: NavController) {
     if (showEmptyDialog) {
         ValidationErrorDialog(onDismiss = { showEmptyDialog = false })
     }
+    
     if (showErrorDialog) {
         AlertDialog(
             onDismissRequest = { showErrorDialog = false; errorMessage = null },
@@ -260,6 +264,13 @@ fun LoginScreen(controller: NavController) {
                                             // Check if selected role matches database role
                                             if (dbRole == selectedRole) {
                                                 session.login(userName, dbRole, uid)
+                                                
+                                                // Show System Banner (Notification)
+                                                val title = RemoteConfigManager.getString(RemoteConfigManager.LOGIN_BANNER_TITLE)
+                                                val rawMessage = RemoteConfigManager.getString(RemoteConfigManager.LOGIN_BANNER_MESSAGE)
+                                                val message = rawMessage.replace("[user]", userName)
+                                                notificationHelper.showAnnouncementNotification(title, message)
+
                                                 controller.navigate(Routes.DASHBOARD) {
                                                     popUpTo(Routes.LOGIN) { inclusive = true }
                                                 }

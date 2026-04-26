@@ -25,6 +25,13 @@ class SessionManager(context: Context) {
         prefs.edit().putBoolean(KEY_DARK_MODE, enabled).apply()
     }
 
+    // ── Notifications ─────────────────────────────────────────────────
+    fun areNotificationsEnabled(): Boolean = prefs.getBoolean(KEY_NOTIFICATIONS_ENABLED, true)
+
+    fun setNotificationsEnabled(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_NOTIFICATIONS_ENABLED, enabled).apply()
+    }
+
     // ── Auth ──────────────────────────────────────────────────────────
     fun login(username: String, role: UserRole = UserRole.STUDENT, uid: String = "") {
         prefs.edit()
@@ -36,10 +43,12 @@ class SessionManager(context: Context) {
     }
 
     fun logout() {
-        // Keep dark-mode preference after logout
+        // Keep dark-mode and notification preference after logout
         val dark = isDarkMode()
+        val notifs = areNotificationsEnabled()
         prefs.edit().clear().apply()
         prefs.edit().putBoolean(KEY_DARK_MODE, dark).apply()
+        prefs.edit().putBoolean(KEY_NOTIFICATIONS_ENABLED, notifs).apply()
     }
 
     companion object {
@@ -48,5 +57,6 @@ class SessionManager(context: Context) {
         private const val KEY_ROLE      = "role"
         private const val KEY_DARK_MODE = "dark_mode"
         private const val KEY_UID       = "uid"
+        private const val KEY_NOTIFICATIONS_ENABLED = "notifications_enabled"
     }
 }

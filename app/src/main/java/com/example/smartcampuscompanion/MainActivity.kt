@@ -1,12 +1,18 @@
 package com.example.smartcampuscompanion
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,14 +26,44 @@ import com.example.smartcampuscompanion.ui.announcements.PostAnnouncementScreen
 import com.example.smartcampuscompanion.ui.dashboard.DashboardScreen
 import com.example.smartcampuscompanion.ui.login.LoginScreen
 import com.example.smartcampuscompanion.ui.theme.SmartCampusCompanionTheme
+import com.example.smartcampuscompanion.util.RemoteConfigManager
 import com.example.smartcampuscompanion.viewmodel.TaskViewModel
+import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : ComponentActivity() {
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        // Permission granted or denied
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         val session = SessionManager(this)
+        
+        // Fetch Remote Config
+        RemoteConfigManager.fetchAndActivate()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("FCM", "Fetching FCM registration token failed", task.exception)
+                return@addOnCompleteListener
+            }
+            val token = task.result
+            Log.d("FCM", "Current token: $token")
+        }
 
         setContent {
             // Seed the theme with the saved preference so it persists across launches

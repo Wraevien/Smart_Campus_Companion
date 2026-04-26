@@ -30,6 +30,8 @@ import com.example.smartcampuscompanion.data.SessionManager
 import com.example.smartcampuscompanion.data.UserRole
 import com.example.smartcampuscompanion.navigation.Routes
 import com.example.smartcampuscompanion.ui.theme.GreenPrimary
+import com.example.smartcampuscompanion.util.NotificationHelper
+import com.example.smartcampuscompanion.util.RemoteConfigManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,6 +39,7 @@ fun RegisterScreen(controller: NavController) {
 
     val context = LocalContext.current
     val session = remember { SessionManager(context) }
+    val notificationHelper = remember { NotificationHelper(context) }
     val colors  = MaterialTheme.colorScheme
 
     val gradient = Brush.verticalGradient(
@@ -60,24 +63,8 @@ fun RegisterScreen(controller: NavController) {
     var selectedRole by remember { mutableStateOf(UserRole.STUDENT) }
     
     var isLoading by remember { mutableStateOf(false) }
-    var showSuccessDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
-    if (showSuccessDialog) {
-        AlertDialog(
-            onDismissRequest = { showSuccessDialog = false },
-            title = { Text("Account Created") },
-            text = { Text("Your account has been registered successfully. Please log in.") },
-            confirmButton = {
-                Button(onClick = { 
-                    showSuccessDialog = false
-                    controller.navigate(Routes.LOGIN) {
-                        popUpTo(Routes.LOGIN_REGISTER) { inclusive = true }
-                    }
-                }) { Text("OK") }
-            }
-        )
-    }
 
     if (errorMessage != null) {
         AlertDialog(
@@ -311,7 +298,15 @@ fun RegisterScreen(controller: NavController) {
                                             .collection("users").document(uid).set(userData)
                                             .addOnSuccessListener {
                                                 isLoading = false
-                                                showSuccessDialog = true
+                                                
+                                                // Show System Banner (Notification)
+                                                val title = RemoteConfigManager.getString(RemoteConfigManager.REGISTER_BANNER_TITLE)
+                                                val message = RemoteConfigManager.getString(RemoteConfigManager.REGISTER_BANNER_MESSAGE)
+                                                notificationHelper.showAnnouncementNotification(title, message)
+
+                                                controller.navigate(Routes.LOGIN) {
+                                                    popUpTo(Routes.LOGIN_REGISTER) { inclusive = true }
+                                                }
                                             }
                                             .addOnFailureListener { e ->
                                                 isLoading = false
