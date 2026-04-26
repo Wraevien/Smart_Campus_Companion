@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
@@ -27,12 +28,12 @@ import com.example.smartcampuscompanion.composables.AppTopBar
 import com.example.smartcampuscompanion.data.SessionManager
 import com.example.smartcampuscompanion.data.UserRole
 import com.example.smartcampuscompanion.ui.theme.LocalDarkTheme
+import com.google.firebase.messaging.FirebaseMessaging
 
 private const val PREFS_PROFILE = "profile_prefs"
 private const val KEY_FULL_NAME = "full_name"
 private const val KEY_EMAIL     = "email"
 private const val KEY_PHONE     = "phone"
-private const val KEY_NOTIF     = "notifications_enabled"
 
 @Composable
 fun ProfileScreen(controller: NavController) {
@@ -51,7 +52,7 @@ fun ProfileScreen(controller: NavController) {
     var phone    by remember { mutableStateOf(prefs.getString(KEY_PHONE,     "") ?: "") }
 
     // ── Toggles ───────────────────────────────────────────────────────
-    var notificationsOn by remember { mutableStateOf(prefs.getBoolean(KEY_NOTIF, true)) }
+    var notificationsOn by remember { mutableStateOf(session.areNotificationsEnabled()) }
 
     // Dark mode wired to the global CompositionLocal so it actually changes the theme
     val darkState  = LocalDarkTheme.current
@@ -60,10 +61,22 @@ fun ProfileScreen(controller: NavController) {
     // ── Edit mode ─────────────────────────────────────────────────────
     var isEditing   by remember { mutableStateOf(false) }
     var showSuccess by remember { mutableStateOf(false) }
+    
+    var fcmToken    by remember { mutableStateOf("Loading...") }
 
     var draftName  by remember { mutableStateOf(fullName) }
     var draftEmail by remember { mutableStateOf(email) }
     var draftPhone by remember { mutableStateOf(phone) }
+
+    LaunchedEffect(Unit) {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            fcmToken = if (task.isSuccessful) {
+                task.result ?: "No token found"
+            } else {
+                "Error: ${task.exception?.message}"
+            }
+        }
+    }
 
     LaunchedEffect(showSuccess) {
         if (showSuccess) {
@@ -262,9 +275,9 @@ fun ProfileScreen(controller: NavController) {
                 icon            = Icons.Outlined.Notifications,
                 iconColor       = colors.primary,
                 checked         = notificationsOn,
-                onCheckedChange = {
-                    notificationsOn = it
-                    prefs.edit().putBoolean(KEY_NOTIF, it).apply()
+                onCheckedChange = { enabled ->
+                    notificationsOn = enabled
+                    session.setNotificationsEnabled(enabled)
                 },
             )
 
@@ -322,6 +335,33 @@ fun ProfileScreen(controller: NavController) {
                             style      = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.SemiBold,
                             color      = colors.onSurface,
+                        )
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(28.dp))
+            HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = colors.outlineVariant)
+            Spacer(Modifier.height(28.dp))
+
+            // ── Debug / FCM Token ──────────────────────────────────────
+            ProfileSectionLabel("Developer Info", Icons.Outlined.BugReport)
+            Spacer(Modifier.height(12.dp))
+            
+            Surface(
+                shape    = RoundedCornerShape(16.dp),
+                color    = colors.surfaceVariant,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text("FCM Registration Token", style = MaterialTheme.typography.labelSmall, color = colors.onSurfaceVariant)
+                    Spacer(Modifier.height(4.dp))
+                    SelectionContainer {
+                        Text(
+                            text       = fcmToken,
+                            style      = MaterialTheme.typography.bodySmall,
+                            color      = if (fcmToken.startsWith("Error")) colors.error else colors.onSurface,
+                            lineHeight = 16.sp
                         )
                     }
                 }

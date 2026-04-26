@@ -1,17 +1,21 @@
 package com.example.smartcampuscompanion.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartcampuscompanion.data.Task
 import com.example.smartcampuscompanion.data.repository.TaskRepository
+import com.example.smartcampuscompanion.util.NotificationHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class TaskViewModel(private val repository: TaskRepository = TaskRepository()) : ViewModel() {
+class TaskViewModel(application: Application) : AndroidViewModel(application) {
 
+    private val repository: TaskRepository = TaskRepository()
+    private val notificationHelper: NotificationHelper = NotificationHelper(application)
     private val _currentUserUid = MutableStateFlow("")
     
     fun setCurrentUser(uid: String) {
@@ -41,6 +45,10 @@ class TaskViewModel(private val repository: TaskRepository = TaskRepository()) :
                     dueAtMillis = dueAtMillis,
                     ownerUid = _currentUserUid.value
                 )
+            )
+            notificationHelper.showReminderNotification(
+                "Task Set",
+                "You have a task: $title"
             )
         }
     }

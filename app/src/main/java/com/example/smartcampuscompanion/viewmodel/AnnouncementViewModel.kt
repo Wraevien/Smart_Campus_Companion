@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.smartcampuscompanion.data.Announcement
 import com.example.smartcampuscompanion.data.AnnouncementWithStatus
 import com.example.smartcampuscompanion.data.repository.AnnouncementRepository
+import com.example.smartcampuscompanion.util.NotificationHelper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,6 +20,7 @@ import kotlinx.coroutines.launch
 class AnnouncementViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: AnnouncementRepository
+    private val notificationHelper: NotificationHelper
     private val _currentUser = MutableStateFlow("")
 
     private val _isLoading = MutableStateFlow(false)
@@ -33,6 +35,7 @@ class AnnouncementViewModel(application: Application) : AndroidViewModel(applica
 
     init {
         repository = AnnouncementRepository()
+        notificationHelper = NotificationHelper(application)
 
         announcements = _currentUser.flatMapLatest { username ->
             repository.getAllAnnouncements(username)
@@ -67,6 +70,10 @@ class AnnouncementViewModel(application: Application) : AndroidViewModel(applica
             _isLoading.value = true
             try {
                 repository.insert(announcement)
+                notificationHelper.showAnnouncementNotification(
+                    "New Announcement",
+                    "${announcement.author}: ${announcement.title}"
+                )
             } finally {
                 _isLoading.value = false
             }
